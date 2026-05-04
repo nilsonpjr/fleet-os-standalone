@@ -26,10 +26,11 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 
 # Sanitize: Remove pgbouncer parameter which is incompatible with psycopg2/SQLAlchemy
 if DATABASE_URL and "pgbouncer" in DATABASE_URL:
-    # Remove pgbouncer=... regardless of where it is in the query string
-    DATABASE_URL = re.sub(r'(\?|&)pgbouncer=[^&]*', '', DATABASE_URL)
-    # Fix potential broken URL (e.g. ?& or trailing ?)
-    DATABASE_URL = DATABASE_URL.replace("?&", "?").rstrip("?")
+    from urllib.parse import urlparse, urlunparse, parse_qsl, urlencode
+    u = urlparse(DATABASE_URL)
+    query = dict(parse_qsl(u.query))
+    query.pop('pgbouncer', None)
+    DATABASE_URL = urlunparse(u._replace(query=urlencode(query)))
 
 if not DATABASE_URL:
     raise ValueError(

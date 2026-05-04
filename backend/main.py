@@ -99,6 +99,7 @@ from modules.lgpd.router import router as lgpd_router
 from modules.fleet.router import router as fleet_router
 from modules.notifications.router import router as notifications_router
 from modules.fleet.telemetry_router import router as telemetry_router
+from modules.monitoring.router import router as monitoring_router
 
 # ------------------------------------------------------------------
 # App Configuration
@@ -180,6 +181,7 @@ _all_routers = [
     orders_router, fiscal_router, finance_router, partners_router,
     config_router, mercury_router, public_router, lgpd_router,
     fleet_router, notifications_router, telemetry_router,
+    monitoring_router,
 ]
 
 for router in _all_routers:

@@ -8,7 +8,14 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     libjpeg-dev \
     zlib1g-dev \
+    curl \
+    tar \
     && rm -rf /var/lib/apt/lists/*
+
+# Install Render CLI
+ARG RENDER_CLI_VERSION=v2.16.0
+RUN curl -L "https://github.com/render-oss/cli/releases/download/${RENDER_CLI_VERSION}/render-linux-x86_64" -o /usr/local/bin/render \
+    && chmod +x /usr/local/bin/render
 
 # Copy requirements
 COPY requirements.txt .
