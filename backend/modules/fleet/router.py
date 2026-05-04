@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, status, Query
 from sqlalchemy.orm import Session
 import shutil, os, uuid
-from backend.services.storage_service import upload_file_to_storage
+from services.storage_service import upload_file_to_storage
 
 from core.database import get_db
 from core.dependencies import get_current_user, require_admin

@@ -2,7 +2,7 @@
 Mercury module router — /mercury endpoints.
 
 This module is a thin wrapper. The actual heavy Playwright scraping logic is 
-preserved as-is from backend/routers/mercury_router.py (it's complex, stateful 
+preserved as-is from routers/mercury_router.py (it's complex, stateful 
 and doesn't depend on SQLAlchemy models). Only the imports are updated to 
 
 """
@@ -67,7 +67,7 @@ async def search_mercury_product(
     """Searches for parts on the Mercury Marine portal via Playwright scraping."""
     try:
         # Import scraper from original backend (no duplication of 1000-line logic)
-        from backend.routers.mercury_router import (  # type: ignore
+        from routers.mercury_router import (  # type: ignore
             search_product_playwright, run_playwright_in_isolated_thread as _orig_runner
         )
     except ImportError:
@@ -96,7 +96,7 @@ async def get_engine_warranty(
 ):
     """Fetches warranty information for a motor serial from the Mercury portal."""
     try:
-        from backend.routers.mercury_router import (  # type: ignore
+        from routers.mercury_router import (  # type: ignore
             search_warranty_playwright, run_playwright_in_isolated_thread as _orig_runner
         )
     except ImportError:
@@ -129,7 +129,7 @@ async def sync_part_price_mercury(
 ):
     """Syncs a part's cost/price from Mercury Marine portal prices."""
     try:
-        from backend.routers.mercury_router import (  # type: ignore
+        from routers.mercury_router import (  # type: ignore
             search_product_playwright, run_playwright_in_isolated_thread as _orig_runner
         )
     except ImportError:

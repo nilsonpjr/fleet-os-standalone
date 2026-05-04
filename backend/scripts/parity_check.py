@@ -38,9 +38,9 @@ def normalize_path(path: str) -> str:
 def main():
     print("Loading backend/ (original)...")
     try:
-        from backend.main import app as orig_app
+        from main import app as orig_app
         orig_routes = get_routes(orig_app)
-        print(f"  ✓ {len(orig_routes)} routes loaded from backend/")
+        print(f"  ✓ {len(orig_routes)} routes loaded from ")
     except Exception as e:
         print(f"  ✗ Failed to load backend/: {e}")
         orig_routes = set()
@@ -49,7 +49,7 @@ def main():
     try:
         from main import app as v2_app
         v2_routes = get_routes(v2_app)
-        print(f"  ✓ {len(v2_routes)} routes loaded from backend_v2/")
+        print(f"  ✓ {len(v2_routes)} routes loaded from v2/")
     except Exception as e:
         print(f"  ✗ Failed to load backend_v2/: {e}")
         v2_routes = set()

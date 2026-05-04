@@ -9,7 +9,7 @@ from modules.auth.models import User
 from modules.finance.schemas import TransactionRead, TransactionCreate
 from modules.finance.crud import get_transactions, create_transaction
 from modules.fleet.models import FleetRequest
-from backend.services.payment_service import payment_service
+from services.payment_service import payment_service
 
 router = APIRouter(prefix="/api/transactions", tags=["Transações Financeiras"])
 
@@ -45,7 +45,7 @@ async def import_financial_file(
 
     try:
         # Import the same service used in the original backend
-        from backend.services.finance_import_service import FinanceImportService  # type: ignore
+        from services.finance_import_service import FinanceImportService  # type: ignore
 
         if filename.endswith(".csv"):
             rows = FinanceImportService.parse_csv(content)

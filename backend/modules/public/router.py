@@ -19,7 +19,7 @@ router = APIRouter(prefix="/public", tags=["Public"])
 def _get_crud():
     """Lazy import of original backend CRUD to avoid circular deps."""
     try:
-        from backend import crud  # type: ignore
+        import crud  # type: ignore
         return crud
     except ImportError:
         return None
@@ -27,7 +27,7 @@ def _get_crud():
 
 def _get_schemas():
     try:
-        from backend import schemas  # type: ignore
+        import schemas  # type: ignore
         return schemas
     except ImportError:
         return None
