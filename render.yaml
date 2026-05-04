@@ -20,7 +20,6 @@ services:
   - type: web
     name: fleet-os-frontend
     runtime: static
-    region: oregon
     plan: free
     buildCommand: npm install && npm run build
     staticPublishPath: dist
