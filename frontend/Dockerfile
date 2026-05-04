@@ -1,0 +1,22 @@
+# fleet_os/Dockerfile
+# Phase 1: Build
+FROM node:20-slim AS build
+
+WORKDIR /app
+
+COPY fleet_os/package*.json ./
+RUN npm install
+
+COPY fleet_os/ ./
+RUN npm run build
+
+# Phase 2: Serve
+FROM nginx:stable-alpine
+
+COPY --from=build /app/dist /usr/share/nginx/html
+# Custom nginx config to support SPA routing
+COPY fleet_os/nginx.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
