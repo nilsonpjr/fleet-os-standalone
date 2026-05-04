@@ -19,11 +19,11 @@ services:
   # Frontend: Static Site
   - type: web
     name: fleet-os-frontend
-    env: static
+    runtime: static
     region: oregon
     plan: free
     buildCommand: npm install && npm run build
-    publishDir: frontend/dist
+    staticPublishPath: dist
     rootDir: frontend
     envVars:
       - key: VITE_API_URL
