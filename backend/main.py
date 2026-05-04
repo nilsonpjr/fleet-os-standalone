@@ -22,6 +22,7 @@ load_dotenv(
     os.path.join(os.path.dirname(__file__), ".env"),
     override=False,
 )
+print("DEBUG: .env loaded")
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -67,7 +68,9 @@ from modules.fleet.models import (                       # noqa: F401
 from modules.notifications.models import Notification       # noqa: F401
 
 # Create tables that don't exist yet (non-destructive)
+print("DEBUG: Calling create_all...")
 Base.metadata.create_all(bind=engine)
+print("DEBUG: create_all finished")
 
 # Schema Evolution: Add missing telemetry columns to existing tables
 ensure_columns("vehicles", [
