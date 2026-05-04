@@ -18,7 +18,7 @@ services:
   - type: web
     name: fleet-os-frontend
     runtime: static
-    buildCommand: npm install && npm run build
+    buildCommand: npm run build
     staticPublishPath: dist
     rootDir: frontend
     envVars:
