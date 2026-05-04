@@ -1,4 +1,3 @@
-# backend_v2/Dockerfile
 FROM python:3.11-slim
 
 WORKDIR /app
@@ -10,16 +9,16 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements
-COPY backend_v2/requirements.txt .
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application
-COPY backend_v2 /app/backend_v2
-COPY .env /app/.env
+COPY . /app
+# Note: .env should ideally be passed via environment variables in production (Render)
 
 ENV PYTHONPATH=/app
-ENV PORT=8001
+ENV PORT=10000
 
-EXPOSE 8001
+EXPOSE 10000
 
-CMD ["python", "backend_v2/main.py"]
+CMD ["gunicorn", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "main:app", "--bind", "0.0.0.0:10000"]
