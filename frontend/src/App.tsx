@@ -52,7 +52,7 @@ const Loader = () => (
 
 export default function App() {
   return (
-    <BrowserRouter basename="/fleet_os">
+    <BrowserRouter>
       <Suspense fallback={<Loader />}>
         <Routes>
           {/* Public */}
