@@ -160,25 +160,17 @@ async def startup_security_checks():
         else:
             logger.warning(msg)
     
-    # Initialize Database Schema
+    # Database initialization moved to manual script (scripts/init_db.py) 
+    # to prevent startup timeouts on Render.
+    """
     try:
         logger.info("🛠️ Inciando criação/verificação de tabelas...")
         Base.metadata.create_all(bind=engine)
-        
-        # Schema Evolution
-        ensure_columns("vehicles", [
-            ("last_lat", "FLOAT"),
-            ("last_lng", "FLOAT"),
-            ("last_sync_at", "TIMESTAMP")
-        ])
-        ensure_columns("workshops", [
-            ("last_lat", "FLOAT"),
-            ("last_lng", "FLOAT"),
-            ("last_sync_at", "TIMESTAMP")
-        ])
+        # ...
         logger.info("✅ Banco de dados pronto!")
     except Exception as e:
         logger.error(f"❌ Erro na inicialização do DB: {e}")
+    """
 
 
 # ------------------------------------------------------------------
