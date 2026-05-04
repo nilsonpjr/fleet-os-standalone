@@ -47,7 +47,7 @@ def main():
 
     print("\nLoading backend_v2/ (modular)...")
     try:
-        from backend_v2.main import app as v2_app
+        from main import app as v2_app
         v2_routes = get_routes(v2_app)
         print(f"  ✓ {len(v2_routes)} routes loaded from backend_v2/")
     except Exception as e:

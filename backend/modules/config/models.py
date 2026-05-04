@@ -7,8 +7,8 @@ from datetime import datetime, timezone
 from sqlalchemy import Column, Integer, String, Float, Boolean, Text, DateTime, Enum, JSON, ForeignKey
 from sqlalchemy.orm import relationship
 
-from backend_v2.core.database import Base
-from backend_v2.core.security import encrypt_data, decrypt_data
+from core.database import Base
+from core.security import encrypt_data, decrypt_data
 from sqlalchemy import TypeDecorator
 
 

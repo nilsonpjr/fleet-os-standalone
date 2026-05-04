@@ -2,7 +2,7 @@
 import pytest
 from fastapi.testclient import TestClient
 from .conftest import _create_tenant, _create_user, _get_token
-from backend_v2.modules.auth.models import UserRole
+from modules.auth.models import UserRole
 
 
 VEHICLE_PAYLOAD = {

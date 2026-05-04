@@ -7,11 +7,11 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 from fastapi.testclient import TestClient
 
-from backend_v2.core.database import Base, get_db
-from backend_v2.modules.auth.models import User, UserRole, Tenant
-from backend_v2.modules.auth.crud import get_password_hash
-from backend_v2.modules.clients.models import Client
-from backend_v2.main import app
+from core.database import Base, get_db
+from modules.auth.models import User, UserRole, Tenant
+from modules.auth.crud import get_password_hash
+from modules.clients.models import Client
+from main import app
 
 # ── Shared in-memory SQLite DB ────────────────────────────────────────────
 SQLALCHEMY_TEST_URL = "sqlite://"

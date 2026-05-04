@@ -42,7 +42,7 @@ for mod, (prefix, tag) in MODULES.items():
 {mod.title()} module router — {prefix} endpoints.
 
 Scaffold — implement by migrating from {original}
-with imports updated to backend_v2.
+with imports updated to 
 """
 from fastapi import APIRouter
 

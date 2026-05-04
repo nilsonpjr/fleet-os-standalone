@@ -3,11 +3,11 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks
 from sqlalchemy.orm import Session
 
-from backend_v2.core.database import get_db
-from backend_v2.core.dependencies import get_current_user
-from backend_v2.modules.auth.models import User
-from backend_v2.modules.clients.schemas import ClientRead, ClientCreate, ClientUpdate, MarinaRead, MarinaCreate
-from backend_v2.modules.clients.crud import (
+from core.database import get_db
+from core.dependencies import get_current_user
+from modules.auth.models import User
+from modules.clients.schemas import ClientRead, ClientCreate, ClientUpdate, MarinaRead, MarinaCreate
+from modules.clients.crud import (
     get_clients, get_client, create_client, update_client, delete_client,
     get_marinas, create_marina, get_client_by_phone,
 )

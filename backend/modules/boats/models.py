@@ -5,7 +5,7 @@ Tables: boats, engines
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 
-from backend_v2.core.database import Base
+from core.database import Base
 
 
 class Engine(Base):

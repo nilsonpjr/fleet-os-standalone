@@ -1,5 +1,5 @@
 """
-Security configuration for backend_v2.
+Security configuration for 
 Handles encryption/decryption of sensitive data and JWT secret management.
 Same logic as backend/security_config.py — rewritten with updated imports.
 """
@@ -7,7 +7,7 @@ import base64
 import hashlib
 import os
 
-from backend_v2.core.logger import get_logger
+from core.logger import get_logger
 
 logger = get_logger("security")
 

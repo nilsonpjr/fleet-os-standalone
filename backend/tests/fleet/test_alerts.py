@@ -1,11 +1,11 @@
 """Tests for expiry alerts and boat regulatory."""
 import pytest
 from datetime import date, timedelta
-from backend_v2.modules.fleet import crud
-from backend_v2.modules.fleet.schemas import VehicleCreate, BoatRegulatoryCreate
-from backend_v2.modules.fleet.models import RequestStatus
+from modules.fleet import crud
+from modules.fleet.schemas import VehicleCreate, BoatRegulatoryCreate
+from modules.fleet.models import RequestStatus
 from .conftest import _create_tenant, _create_client
-from backend_v2.modules.auth.models import UserRole
+from modules.auth.models import UserRole
 
 
 class TestExpiryAlerts:
@@ -86,8 +86,8 @@ class TestBoatRegulatory:
     def test_upsert_boat_regulatory(self, http, db, admin_token):
         # We can't create a boat via fleet module (uses existing boats module)
         # So we test CRUD layer directly
-        from backend_v2.modules.boats.models import Boat
-        from backend_v2.modules.fleet.crud import get_or_create_boat_regulatory
+        from modules.boats.models import Boat
+        from modules.fleet.crud import get_or_create_boat_regulatory
 
         tenant = _create_tenant(db)
         client = _create_client(db, tenant.id)

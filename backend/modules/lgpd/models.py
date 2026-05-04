@@ -9,7 +9,7 @@ Implements:
 import enum
 from datetime import datetime, timezone
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, Text, Enum, ForeignKey
-from backend_v2.core.database import Base
+from core.database import Base
 
 
 class ConsentSource(str, enum.Enum):

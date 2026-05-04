@@ -2,10 +2,10 @@
 from typing import Optional
 from sqlalchemy.orm import Session
 
-from backend_v2.modules.orders.models import ServiceOrder, ServiceItem, OrderNote, TechnicalDelivery, OSStatus
-from backend_v2.modules.inventory.models import StockMovement, MovementType
-from backend_v2.modules.finance.models import Transaction
-from backend_v2.modules.orders.schemas import (
+from modules.orders.models import ServiceOrder, ServiceItem, OrderNote, TechnicalDelivery, OSStatus
+from modules.inventory.models import StockMovement, MovementType
+from modules.finance.models import Transaction
+from modules.orders.schemas import (
     ServiceOrderCreate, ServiceOrderUpdate,
     ServiceItemCreate, OrderNoteCreate,
     TechnicalDeliveryCreate,
@@ -112,7 +112,7 @@ def complete_order(db: Session, order_id: int, tenant_id: int) -> Optional[Servi
     # Deduct stock for part items
     for item in db_order.items:
         if item.part_id and item.type == "PART":
-            from backend_v2.modules.inventory.models import Part
+            from modules.inventory.models import Part
             part = db.query(Part).filter(Part.id == item.part_id).first()
             if part:
                 part.quantity = max(0.0, part.quantity - item.quantity)
@@ -155,7 +155,7 @@ def reopen_order(db: Session, order_id: int, tenant_id: int) -> Optional[Service
     # Return parts to stock
     for item in db_order.items:
         if item.part_id and item.type == "PART":
-            from backend_v2.modules.inventory.models import Part
+            from modules.inventory.models import Part
             part = db.query(Part).filter(Part.id == item.part_id).first()
             if part:
                 part.quantity += item.quantity

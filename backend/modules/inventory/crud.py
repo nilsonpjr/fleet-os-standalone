@@ -5,8 +5,8 @@ from unicodedata import normalize
 from datetime import datetime, timezone
 from sqlalchemy.orm import Session
 
-from backend_v2.modules.inventory.models import Part, StockMovement, MovementType, MaintenanceKit, MaintenanceKitItem, ItemType
-from backend_v2.modules.inventory.schemas import PartCreate, PartUpdate, StockMovementCreate, MaintenanceKitCreate
+from modules.inventory.models import Part, StockMovement, MovementType, MaintenanceKit, MaintenanceKitItem, ItemType
+from modules.inventory.schemas import PartCreate, PartUpdate, StockMovementCreate, MaintenanceKitCreate
 
 
 # --- Parts ---

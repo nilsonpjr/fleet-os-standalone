@@ -1,8 +1,8 @@
 """Fiscal module CRUD."""
 from typing import Optional
 from sqlalchemy.orm import Session
-from backend_v2.modules.fiscal.models import FiscalInvoice
-from backend_v2.modules.fiscal.schemas import FiscalInvoiceCreate
+from modules.fiscal.models import FiscalInvoice
+from modules.fiscal.schemas import FiscalInvoiceCreate
 
 
 def get_invoices(db: Session, tenant_id: int) -> list[FiscalInvoice]:

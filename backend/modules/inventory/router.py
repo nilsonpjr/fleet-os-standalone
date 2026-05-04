@@ -4,19 +4,19 @@ from datetime import datetime, timezone
 from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks
 from sqlalchemy.orm import Session
 
-from backend_v2.core.database import get_db
-from backend_v2.core.dependencies import get_current_user
-from backend_v2.core.logger import get_logger
-from backend_v2.modules.auth.models import User, UserRole
-from backend_v2.modules.inventory.models import Part, MovementType
-from backend_v2.modules.finance.models import Transaction
-from backend_v2.modules.inventory.schemas import (
+from core.database import get_db
+from core.dependencies import get_current_user
+from core.logger import get_logger
+from modules.auth.models import User, UserRole
+from modules.inventory.models import Part, MovementType
+from modules.finance.models import Transaction
+from modules.inventory.schemas import (
     PartRead, PartCreate, PartUpdate,
     StockMovementRead, StockMovementCreate,
     BulkPublishRequest, QuickSaleRequest,
     MaintenanceKitRead, MaintenanceKitCreate,
 )
-from backend_v2.modules.inventory.crud import (
+from modules.inventory.crud import (
     get_parts, get_part, get_part_by_sku,
     create_part, update_part, delete_part, bulk_publish_parts,
     get_movements, create_stock_movement,

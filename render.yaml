@@ -1,0 +1,30 @@
+services:
+  # Backend: Python/FastAPI
+  - type: web
+    name: fleet-os-backend
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn -w 4 -k uvicorn.workers.UvicornWorker main:app
+    rootDir: backend
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALLOWED_ORIGINS
+        value: https://fleet-os-frontend.onrender.com,http://localhost:5173
+
+  # Frontend: Static Site
+  - type: web
+    name: fleet-os-frontend
+    env: static
+    region: oregon
+    plan: free
+    buildCommand: npm install && npm run build
+    publishDir: frontend/dist
+    rootDir: frontend
+    envVars:
+      - key: VITE_API_URL
+        value: https://fleet-os-backend.onrender.com

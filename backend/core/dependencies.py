@@ -1,5 +1,5 @@
 """
-FastAPI dependency providers for backend_v2.
+FastAPI dependency providers for 
 Provides: get_db, get_current_user, get_tenant_db, require_admin.
 Same logic as backend/dependencies.py — updated imports only.
 """
@@ -7,9 +7,9 @@ from typing import Optional
 from fastapi import Depends, HTTPException, status, Header
 from sqlalchemy.orm import Session
 
-from backend_v2.core.database import get_db
-from backend_v2.core.auth import verify_token
-from backend_v2.modules.auth.models import User, UserRole
+from core.database import get_db
+from core.auth import verify_token
+from modules.auth.models import User, UserRole
 
 
 async def get_current_user(

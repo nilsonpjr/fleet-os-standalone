@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, Text
 from sqlalchemy.sql import func
-from backend_v2.core.database import Base
+from core.database import Base
 
 class Notification(Base):
     __tablename__ = "notifications"

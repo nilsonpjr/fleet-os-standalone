@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 from sqlalchemy import Column, Integer, String, Float, Boolean, Text, DateTime, Enum, JSON, ForeignKey
 from sqlalchemy.orm import relationship
 
-from backend_v2.core.database import Base
+from core.database import Base
 
 
 class PartnerType(str, enum.Enum):

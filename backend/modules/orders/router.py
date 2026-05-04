@@ -4,19 +4,19 @@ from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks
 from sqlalchemy.orm import Session
 
-from backend_v2.core.database import get_db
-from backend_v2.core.dependencies import get_current_user
-from backend_v2.core.logger import get_logger
-from backend_v2.core.auth import create_access_token, verify_token
-from backend_v2.modules.auth.models import User, UserRole
-from backend_v2.modules.orders.models import ServiceOrder, OSStatus
-from backend_v2.modules.orders.schemas import (
+from core.database import get_db
+from core.dependencies import get_current_user
+from core.logger import get_logger
+from core.auth import create_access_token, verify_token
+from modules.auth.models import User, UserRole
+from modules.orders.models import ServiceOrder, OSStatus
+from modules.orders.schemas import (
     ServiceOrderRead, ServiceOrderCreate, ServiceOrderUpdate,
     ServiceItemCreate, ServiceItemUpdate,
     OrderNoteCreate, OrderNoteRead,
     TechnicalDeliveryCreate, TechnicalDeliveryRead,
 )
-from backend_v2.modules.orders.crud import (
+from modules.orders.crud import (
     get_orders, get_order, create_order, update_order,
     add_order_item, remove_order_item, add_order_note,
     complete_order, reopen_order,
@@ -114,7 +114,7 @@ def update_item(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    from backend_v2.modules.orders.models import ServiceItem
+    from modules.orders.models import ServiceItem
     db_item = (
         db.query(ServiceItem)
         .join(ServiceOrder)

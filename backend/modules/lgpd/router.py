@@ -21,22 +21,22 @@ from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 
-from backend_v2.core.database import get_db
-from backend_v2.core.dependencies import get_current_user, require_admin
-from backend_v2.core.logger import get_logger
-from backend_v2.modules.auth.models import User
-from backend_v2.modules.lgpd.schemas import (
+from core.database import get_db
+from core.dependencies import get_current_user, require_admin
+from core.logger import get_logger
+from modules.auth.models import User
+from modules.lgpd.schemas import (
     ConsentCreate, ConsentRead,
     ErasureRequestCreate, ErasureRequestRead, ErasureReview,
     AuditLogRead, DataProcessingInfo,
 )
-from backend_v2.modules.lgpd.crud import (
+from modules.lgpd.crud import (
     record_consent, revoke_consent, log_audit,
     get_audit_logs, create_erasure_request,
     get_erasure_requests, review_erasure_request, execute_erasure,
 )
-from backend_v2.modules.lgpd.models import AuditAction
-from backend_v2.modules.lgpd.anonymizer import build_data_export
+from modules.lgpd.models import AuditAction
+from modules.lgpd.anonymizer import build_data_export
 
 logger = get_logger("lgpd_router")
 router = APIRouter(prefix="/lgpd", tags=["LGPD — Privacidade"])
@@ -132,7 +132,7 @@ def request_erasure(
     Art. 18, IV, LGPD.
     """
     # Verify client belongs to tenant
-    from backend_v2.modules.clients.models import Client
+    from modules.clients.models import Client
     client = db.query(Client).filter(
         Client.id == client_id, Client.tenant_id == current_user.tenant_id
     ).first()

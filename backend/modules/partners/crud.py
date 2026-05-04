@@ -1,8 +1,8 @@
 """Partners module CRUD."""
 from typing import Optional
 from sqlalchemy.orm import Session
-from backend_v2.modules.partners.models import Partner, PartnerQuote
-from backend_v2.modules.partners.schemas import PartnerCreate, PartnerUpdate, PartnerQuoteCreate
+from modules.partners.models import Partner, PartnerQuote
+from modules.partners.schemas import PartnerCreate, PartnerUpdate, PartnerQuoteCreate
 
 
 def get_partners(db: Session, tenant_id: int) -> list[Partner]:

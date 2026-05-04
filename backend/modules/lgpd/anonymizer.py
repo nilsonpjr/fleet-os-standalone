@@ -26,7 +26,7 @@ def anonymize_client(db: Session, client_id: int, tenant_id: int) -> bool:
     Returns True if executed, False if client not found.
     Art. 18, IV, LGPD.
     """
-    from backend_v2.modules.clients.models import Client
+    from modules.clients.models import Client
     client = db.query(Client).filter(
         Client.id == client_id,
         Client.tenant_id == tenant_id,
@@ -65,7 +65,7 @@ def anonymize_client(db: Session, client_id: int, tenant_id: int) -> bool:
 
 def _anonymize_engine_client_names(db: Session, client_id: int, tenant_id: int):
     """Removes client name references from engine records."""
-    from backend_v2.modules.boats.models import Boat, Engine
+    from modules.boats.models import Boat, Engine
     boats = db.query(Boat).filter(
         Boat.client_id == client_id,
         Boat.tenant_id == tenant_id,
@@ -81,7 +81,7 @@ def _redact_order_pii(db: Session, client_id: int):
     Replaces requester name in service orders.
     Keeps order structure intact for fiscal/accounting purposes.
     """
-    from backend_v2.modules.orders.models import ServiceOrder, OrderNote
+    from modules.orders.models import ServiceOrder, OrderNote
     orders = db.query(ServiceOrder).filter(ServiceOrder.client_id == client_id).all()
     for order in orders:
         if order.requester:
@@ -95,10 +95,10 @@ def build_data_export(db: Session, client_id: int, tenant_id: int) -> dict:
     Collects all personal data for a data subject.
     Art. 18, II (Acesso) and III (Portabilidade), LGPD.
     """
-    from backend_v2.modules.clients.models import Client
-    from backend_v2.modules.boats.models import Boat
-    from backend_v2.modules.orders.models import ServiceOrder
-    from backend_v2.modules.finance.models import Transaction
+    from modules.clients.models import Client
+    from modules.boats.models import Boat
+    from modules.orders.models import ServiceOrder
+    from modules.finance.models import Transaction
 
     client = db.query(Client).filter(
         Client.id == client_id, Client.tenant_id == tenant_id

@@ -1,5 +1,5 @@
 """
-Logger centralizado para backend_v2.
+Logger centralizado para 
 Preserva o mesmo comportamento do backend/logger.py original.
 """
 import logging
@@ -7,7 +7,7 @@ import os
 
 
 def get_logger(name: str) -> logging.Logger:
-    logger = logging.getLogger(f"backend_v2.{name}")
+    logger = logging.getLogger(f"{name}")
     if not logger.handlers:
         level = logging.DEBUG if os.getenv("DEBUG") else logging.INFO
         handler = logging.StreamHandler()

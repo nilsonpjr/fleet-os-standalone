@@ -1,8 +1,8 @@
 """Config module CRUD."""
 from typing import Optional
 from sqlalchemy.orm import Session
-from backend_v2.modules.config.models import CompanyInfo, ServiceDefinition
-from backend_v2.modules.config.schemas import CompanyInfoUpdate, ServiceDefCreate
+from modules.config.models import CompanyInfo, ServiceDefinition
+from modules.config.schemas import CompanyInfoUpdate, ServiceDefCreate
 
 
 def get_company_info(db: Session, tenant_id: int) -> Optional[CompanyInfo]:

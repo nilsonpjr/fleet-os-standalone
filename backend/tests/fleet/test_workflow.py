@@ -6,14 +6,14 @@ Client creates request → Admin assigns to workshop → Workshop submits quote
 """
 import pytest
 from sqlalchemy.orm import Session
-from backend_v2.modules.fleet import crud
-from backend_v2.modules.fleet.schemas import (
+from modules.fleet import crud
+from modules.fleet.schemas import (
     FleetRequestCreate, WorkshopCreate, VehicleCreate,
     WorkshopQuoteCreate, QuoteItemCreate, ExecutionUpdate,
 )
-from backend_v2.modules.fleet.models import RequestStatus, QuoteStatus, ExecutionApprovalStatus
+from modules.fleet.models import RequestStatus, QuoteStatus, ExecutionApprovalStatus
 from .conftest import _create_tenant, _create_user, _create_client
-from backend_v2.modules.auth.models import UserRole
+from modules.auth.models import UserRole
 
 
 WORKSHOP_PAYLOAD = {

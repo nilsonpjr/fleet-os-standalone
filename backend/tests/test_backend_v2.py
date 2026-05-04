@@ -18,8 +18,8 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from backend_v2.core.database import Base, get_db
-from backend_v2.main import app
+from core.database import Base, get_db
+from main import app
 
 from sqlalchemy.pool import StaticPool
 
@@ -56,7 +56,7 @@ client = TestClient(app, raise_server_exceptions=False)
 # ─── Helpers ────────────────────────────────────────────────────────────────
 
 def _create_tenant_and_admin(db):
-    from backend_v2.modules.auth.models import Tenant, User, UserRole
+    from modules.auth.models import Tenant, User, UserRole
     from passlib.context import CryptContext
     pwd = CryptContext(schemes=["bcrypt"])
     tenant = Tenant(name="Teste Tenant", subdomain="teste", plan="BASIC")

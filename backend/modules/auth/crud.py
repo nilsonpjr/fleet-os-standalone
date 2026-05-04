@@ -5,8 +5,8 @@ from typing import Optional
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 
-from backend_v2.modules.auth.models import User, Tenant, UserRole
-from backend_v2.modules.auth.schemas import UserCreate, TenantSignup
+from modules.auth.models import User, Tenant, UserRole
+from modules.auth.schemas import UserCreate, TenantSignup
 
 _pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 

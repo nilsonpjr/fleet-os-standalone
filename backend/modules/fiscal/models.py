@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 from sqlalchemy import Column, Integer, String, Float, DateTime, Enum, Text, ForeignKey
 from sqlalchemy.orm import relationship
 
-from backend_v2.core.database import Base
+from core.database import Base
 
 
 class InvoiceType(str, enum.Enum):

@@ -3,11 +3,11 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from backend_v2.core.database import get_db
-from backend_v2.core.dependencies import get_current_user
-from backend_v2.modules.auth.models import User
-from backend_v2.modules.fiscal.schemas import FiscalInvoiceRead, FiscalInvoiceCreate
-from backend_v2.modules.fiscal.crud import get_invoices, get_invoice, create_invoice
+from core.database import get_db
+from core.dependencies import get_current_user
+from modules.auth.models import User
+from modules.fiscal.schemas import FiscalInvoiceRead, FiscalInvoiceCreate
+from modules.fiscal.crud import get_invoices, get_invoice, create_invoice
 
 router = APIRouter(prefix="/api/fiscal", tags=["Fiscal"])
 

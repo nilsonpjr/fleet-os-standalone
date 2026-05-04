@@ -3,11 +3,11 @@ from datetime import datetime, timezone, timedelta
 from typing import Optional
 from sqlalchemy.orm import Session
 
-from backend_v2.modules.lgpd.models import (
+from modules.lgpd.models import (
     ConsentRecord, AuditLog, ErasureRequest,
     ConsentSource, ConsentPurpose, AuditAction, ErasureStatus,
 )
-from backend_v2.modules.lgpd.schemas import ConsentCreate, ErasureRequestCreate
+from modules.lgpd.schemas import ConsentCreate, ErasureRequestCreate
 
 
 ERASURE_SLA_DAYS = 15
@@ -147,7 +147,7 @@ def execute_erasure(
     tenant_id: int,
 ) -> Optional[ErasureRequest]:
     """Executes anonymization after approval."""
-    from backend_v2.modules.lgpd.anonymizer import anonymize_client
+    from modules.lgpd.anonymizer import anonymize_client
 
     req = db.query(ErasureRequest).filter(
         ErasureRequest.id == request_id,

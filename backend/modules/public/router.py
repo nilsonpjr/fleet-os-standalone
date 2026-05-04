@@ -9,8 +9,8 @@ from typing import Optional, List
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from backend_v2.core.database import get_db
-from backend_v2.core.logger import get_logger
+from core.database import get_db
+from core.logger import get_logger
 
 logger = get_logger("public_router")
 router = APIRouter(prefix="/public", tags=["Public"])

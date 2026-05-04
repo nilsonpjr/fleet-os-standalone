@@ -3,11 +3,11 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from backend_v2.core.database import get_db
-from backend_v2.core.dependencies import get_current_user
-from backend_v2.modules.auth.models import User
-from backend_v2.modules.partners.schemas import PartnerRead, PartnerCreate, PartnerUpdate, PartnerQuoteRead, PartnerQuoteCreate
-from backend_v2.modules.partners.crud import get_partners, get_partner, create_partner, update_partner, get_quotes, create_quote
+from core.database import get_db
+from core.dependencies import get_current_user
+from modules.auth.models import User
+from modules.partners.schemas import PartnerRead, PartnerCreate, PartnerUpdate, PartnerQuoteRead, PartnerQuoteCreate
+from modules.partners.crud import get_partners, get_partner, create_partner, update_partner, get_quotes, create_quote
 
 router = APIRouter(prefix="/api/partners", tags=["Parceiros"])
 

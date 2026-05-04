@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from backend_v2.modules.notifications.models import Notification
-from backend_v2.modules.notifications.schemas import NotificationCreate
+from modules.notifications.models import Notification
+from modules.notifications.schemas import NotificationCreate
 
 def get_notifications(db: Session, user_id: int, tenant_id: int, limit: int = 20):
     return db.query(Notification).filter(

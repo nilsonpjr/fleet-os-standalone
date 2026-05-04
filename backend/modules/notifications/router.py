@@ -2,11 +2,11 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from backend_v2.core.database import get_db
-from backend_v2.core.dependencies import get_current_user
-from backend_v2.modules.auth.models import User
-from backend_v2.modules.notifications.schemas import NotificationRead
-from backend_v2.modules.notifications import crud
+from core.database import get_db
+from core.dependencies import get_current_user
+from modules.auth.models import User
+from modules.notifications.schemas import NotificationRead
+from modules.notifications import crud
 
 router = APIRouter(prefix="/api/notifications", tags=["Notificações"])
 

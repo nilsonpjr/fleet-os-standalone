@@ -3,11 +3,11 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from backend_v2.core.database import get_db
-from backend_v2.core.dependencies import get_current_user, require_admin
-from backend_v2.modules.auth.models import User
-from backend_v2.modules.config.schemas import CompanyInfoRead, CompanyInfoUpdate, ServiceDefRead, ServiceDefCreate
-from backend_v2.modules.config.crud import get_company_info, upsert_company_info, get_service_definitions, create_service_definition
+from core.database import get_db
+from core.dependencies import get_current_user, require_admin
+from modules.auth.models import User
+from modules.config.schemas import CompanyInfoRead, CompanyInfoUpdate, ServiceDefRead, ServiceDefCreate
+from modules.config.crud import get_company_info, upsert_company_info, get_service_definitions, create_service_definition
 
 router = APIRouter(prefix="/api/config", tags=["Configurações"])
 

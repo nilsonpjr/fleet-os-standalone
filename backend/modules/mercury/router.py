@@ -4,7 +4,7 @@ Mercury module router — /mercury endpoints.
 This module is a thin wrapper. The actual heavy Playwright scraping logic is 
 preserved as-is from backend/routers/mercury_router.py (it's complex, stateful 
 and doesn't depend on SQLAlchemy models). Only the imports are updated to 
-backend_v2.
+
 """
 import threading
 from typing import Dict, Any, List, Optional
@@ -12,13 +12,13 @@ from fastapi import APIRouter, HTTPException, Depends, status
 from fastapi.concurrency import run_in_threadpool
 from sqlalchemy.orm import Session
 
-from backend_v2.core.database import get_db
-from backend_v2.core.dependencies import get_current_user
-from backend_v2.core.logger import get_logger
-from backend_v2.modules.auth.models import User
-from backend_v2.modules.config.crud import get_company_info
-from backend_v2.modules.inventory.crud import get_part, update_part
-from backend_v2.modules.inventory.schemas import PartUpdate
+from core.database import get_db
+from core.dependencies import get_current_user
+from core.logger import get_logger
+from modules.auth.models import User
+from modules.config.crud import get_company_info
+from modules.inventory.crud import get_part, update_part
+from modules.inventory.schemas import PartUpdate
 
 logger = get_logger("mercury_router")
 router = APIRouter(prefix="/api/mercury", tags=["Mercury"])

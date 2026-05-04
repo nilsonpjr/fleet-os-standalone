@@ -3,12 +3,12 @@ from typing import List
 from fastapi import APIRouter, Depends, BackgroundTasks, HTTPException, UploadFile, File
 from sqlalchemy.orm import Session
 
-from backend_v2.core.database import get_db
-from backend_v2.core.dependencies import get_current_user
-from backend_v2.modules.auth.models import User
-from backend_v2.modules.finance.schemas import TransactionRead, TransactionCreate
-from backend_v2.modules.finance.crud import get_transactions, create_transaction
-from backend_v2.modules.fleet.models import FleetRequest
+from core.database import get_db
+from core.dependencies import get_current_user
+from modules.auth.models import User
+from modules.finance.schemas import TransactionRead, TransactionCreate
+from modules.finance.crud import get_transactions, create_transaction
+from modules.fleet.models import FleetRequest
 from backend.services.payment_service import payment_service
 
 router = APIRouter(prefix="/api/transactions", tags=["Transações Financeiras"])

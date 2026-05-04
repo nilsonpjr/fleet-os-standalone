@@ -17,9 +17,9 @@ from dotenv import load_dotenv
 if sys.platform == "win32":
     asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
 
-# Load .env from the backend/ directory (shared DB config)
+# Load .env from the current directory
 load_dotenv(
-    os.path.join(os.path.dirname(__file__), "..", "backend", ".env"),
+    os.path.join(os.path.dirname(__file__), ".env"),
     override=True,
 )
 
@@ -27,10 +27,10 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from backend_v2.core.logger import get_logger
-from backend_v2.core.security import is_secret_key_secure
-from backend_v2.core.database import Base, engine, ensure_columns
-from backend_v2.core.logger import get_logger
+from core.logger import get_logger
+from core.security import is_secret_key_secure
+from core.database import Base, engine, ensure_columns
+from core.logger import get_logger
 
 logger = get_logger("main")
 
@@ -38,33 +38,33 @@ logger = get_logger("main")
 # Import ALL module models so SQLAlchemy can build the full metadata
 # graph correctly (relationships between modules need all tables known).
 # ------------------------------------------------------------------
-from backend_v2.modules.auth.models import User, Tenant            # noqa: F401
-from backend_v2.modules.clients.models import Client, Marina       # noqa: F401
-from backend_v2.modules.boats.models import Boat, Engine           # noqa: F401
-from backend_v2.modules.inventory.models import (                  # noqa: F401
+from modules.auth.models import User, Tenant            # noqa: F401
+from modules.clients.models import Client, Marina       # noqa: F401
+from modules.boats.models import Boat, Engine           # noqa: F401
+from modules.inventory.models import (                  # noqa: F401
     Part, StockMovement, Invoice, MaintenanceKit, MaintenanceKitItem
 )
-from backend_v2.modules.orders.models import (                     # noqa: F401
+from modules.orders.models import (                     # noqa: F401
     ServiceOrder, ServiceItem, OrderNote, TechnicalDelivery
 )
-from backend_v2.modules.fiscal.models import FiscalInvoice         # noqa: F401
-from backend_v2.modules.finance.models import Transaction          # noqa: F401
-from backend_v2.modules.partners.models import (                   # noqa: F401
+from modules.fiscal.models import FiscalInvoice         # noqa: F401
+from modules.finance.models import Transaction          # noqa: F401
+from modules.partners.models import (                   # noqa: F401
     Partner, PartnerQuote, Inspection
 )
-from backend_v2.modules.config.models import (                     # noqa: F401
+from modules.config.models import (                     # noqa: F401
     CompanyInfo, ServiceDefinition, ServiceCategory,
     ServiceSubcategory, ServiceCatalog
 )
-from backend_v2.modules.lgpd.models import (                       # noqa: F401
+from modules.lgpd.models import (                       # noqa: F401
     ConsentRecord, AuditLog, ErasureRequest
 )
-from backend_v2.modules.fleet.models import (                       # noqa: F401
+from modules.fleet.models import (                       # noqa: F401
     Vehicle, BoatRegulatory, Workshop as FleetWorkshop,
     FleetRequest, WorkshopQuote, WorkshopQuoteItem,
     WorkshopExecution, FleetClientDetail, MaintenanceSchedule,
 )
-from backend_v2.modules.notifications.models import Notification       # noqa: F401
+from modules.notifications.models import Notification       # noqa: F401
 
 # Create tables that don't exist yet (non-destructive)
 Base.metadata.create_all(bind=engine)
@@ -84,21 +84,21 @@ ensure_columns("workshops", [
 # ------------------------------------------------------------------
 # Import routers
 # ------------------------------------------------------------------
-from backend_v2.modules.auth.router import router as auth_router
-from backend_v2.modules.clients.router import router as clients_router
-from backend_v2.modules.boats.router import router as boats_router
-from backend_v2.modules.inventory.router import router as inventory_router
-from backend_v2.modules.orders.router import router as orders_router
-from backend_v2.modules.fiscal.router import router as fiscal_router
-from backend_v2.modules.finance.router import router as finance_router
-from backend_v2.modules.partners.router import router as partners_router
-from backend_v2.modules.config.router import router as config_router
-from backend_v2.modules.mercury.router import router as mercury_router
-from backend_v2.modules.public.router import router as public_router
-from backend_v2.modules.lgpd.router import router as lgpd_router
-from backend_v2.modules.fleet.router import router as fleet_router
-from backend_v2.modules.notifications.router import router as notifications_router
-from backend_v2.modules.fleet.telemetry_router import router as telemetry_router
+from modules.auth.router import router as auth_router
+from modules.clients.router import router as clients_router
+from modules.boats.router import router as boats_router
+from modules.inventory.router import router as inventory_router
+from modules.orders.router import router as orders_router
+from modules.fiscal.router import router as fiscal_router
+from modules.finance.router import router as finance_router
+from modules.partners.router import router as partners_router
+from modules.config.router import router as config_router
+from modules.mercury.router import router as mercury_router
+from modules.public.router import router as public_router
+from modules.lgpd.router import router as lgpd_router
+from modules.fleet.router import router as fleet_router
+from modules.notifications.router import router as notifications_router
+from modules.fleet.telemetry_router import router as telemetry_router
 
 # ------------------------------------------------------------------
 # App Configuration
@@ -237,4 +237,4 @@ if __name__ == "__main__":
     import uvicorn
     port = int(os.environ.get("PORT", 8001))  # porta diferente para não colidir com backend/
     is_dev = os.environ.get("RENDER") is None
-    uvicorn.run("backend_v2.main:app", host="0.0.0.0", port=port, reload=is_dev)
+    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=is_dev)

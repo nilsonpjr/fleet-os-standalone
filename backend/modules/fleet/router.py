@@ -6,11 +6,11 @@ from sqlalchemy.orm import Session
 import shutil, os, uuid
 from backend.services.storage_service import upload_file_to_storage
 
-from backend_v2.core.database import get_db
-from backend_v2.core.dependencies import get_current_user, require_admin
-from backend_v2.modules.auth.models import User, UserRole
-from backend_v2.modules.fleet import crud
-from backend_v2.modules.fleet.schemas import (
+from core.database import get_db
+from core.dependencies import get_current_user, require_admin
+from modules.auth.models import User, UserRole
+from modules.fleet import crud
+from modules.fleet.schemas import (
     VehicleCreate, VehicleUpdate, VehicleRead,
     BoatRegulatoryCreate, BoatRegulatoryRead,
     WorkshopCreate, WorkshopUpdate, WorkshopRead,
@@ -188,7 +188,7 @@ def list_my_requests(db: Session = Depends(get_db), current_user: User = Depends
 @router.get("/requests/assigned", response_model=List[FleetRequestRead])
 def list_assigned_requests(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     """Workshop: requests assigned to this workshop (via partner_id → workshop)."""
-    from backend_v2.modules.fleet.models import Workshop
+    from modules.fleet.models import Workshop
     workshop = db.query(Workshop).filter(
         Workshop.tenant_id == current_user.tenant_id,
         Workshop.partner_id == getattr(current_user, "partner_id", None),
@@ -309,7 +309,7 @@ def create_quote(
     current_user: User = Depends(get_current_user),
 ):
     """Workshop creates/updates quote for a request."""
-    from backend_v2.modules.fleet.models import Workshop
+    from modules.fleet.models import Workshop
     workshop = db.query(Workshop).filter(
         Workshop.tenant_id == current_user.tenant_id,
         Workshop.partner_id == getattr(current_user, "partner_id", None),
@@ -326,7 +326,7 @@ async def upload_quote_photo_before(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    from backend_v2.modules.fleet.models import WorkshopQuote
+    from modules.fleet.models import WorkshopQuote
     quote = db.query(WorkshopQuote).filter(WorkshopQuote.id == quote_id).first()
     if not quote:
         raise HTTPException(status_code=404)
@@ -348,7 +348,7 @@ def submit_quote(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    from backend_v2.modules.fleet.models import Workshop
+    from modules.fleet.models import Workshop
     workshop = db.query(Workshop).filter(
         Workshop.tenant_id == current_user.tenant_id,
         Workshop.partner_id == getattr(current_user, "partner_id", None),
@@ -370,7 +370,7 @@ def update_execution(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    from backend_v2.modules.fleet.models import Workshop
+    from modules.fleet.models import Workshop
     workshop = db.query(Workshop).filter(
         Workshop.tenant_id == current_user.tenant_id,
         Workshop.partner_id == getattr(current_user, "partner_id", None),
@@ -389,7 +389,7 @@ def request_closure(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    from backend_v2.modules.fleet.models import Workshop
+    from modules.fleet.models import Workshop
     workshop = db.query(Workshop).filter(
         Workshop.tenant_id == current_user.tenant_id,
         Workshop.partner_id == getattr(current_user, "partner_id", None),

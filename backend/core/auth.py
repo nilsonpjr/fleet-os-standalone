@@ -1,12 +1,12 @@
 """
-JWT authentication helpers for backend_v2.
+JWT authentication helpers for 
 Same logic as backend/auth.py — updated imports only.
 """
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 from jose import JWTError, jwt
 
-from backend_v2.core.security import get_secret_key
+from core.security import get_secret_key
 
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 1440  # 24 hours

@@ -4,15 +4,15 @@ from datetime import datetime, timezone, date, timedelta
 from typing import List, Optional, Dict
 from sqlalchemy.orm import Session
 
-from backend_v2.modules.fleet.models import (
+from modules.fleet.models import (
     Vehicle, BoatRegulatory, Workshop, FleetRequest, WorkshopQuote,
     WorkshopQuoteItem, WorkshopExecution, FleetClientDetail,
     MaintenanceSchedule, RequestStatus, QuoteStatus, ExecutionApprovalStatus,
     RequestMessage,
 )
-from backend_v2.modules.auth.models import User
-from backend_v2.modules.notifications.crud import notify_user
-from backend_v2.modules.fleet.schemas import (
+from modules.auth.models import User
+from modules.notifications.crud import notify_user
+from modules.fleet.schemas import (
     VehicleCreate, VehicleUpdate,
     BoatRegulatoryCreate,
     WorkshopCreate, WorkshopUpdate,
@@ -490,7 +490,7 @@ def get_expiry_alerts(db: Session, tenant_id: int, days_ahead: int = 30) -> List
                 continue
 
     # Boat regulatory alerts
-    from backend_v2.modules.boats.models import Boat
+    from modules.boats.models import Boat
     boats_with_reg = db.query(Boat, BoatRegulatory).join(
         BoatRegulatory, Boat.id == BoatRegulatory.boat_id
     ).filter(Boat.tenant_id == tenant_id).all()

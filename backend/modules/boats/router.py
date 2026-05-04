@@ -3,13 +3,13 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks
 from sqlalchemy.orm import Session
 
-from backend_v2.core.database import get_db
-from backend_v2.core.dependencies import get_current_user
-from backend_v2.modules.auth.models import User
-from backend_v2.modules.boats.schemas import BoatRead, BoatCreate, BoatUpdate
-from backend_v2.modules.boats.crud import get_boats, get_boat, create_boat, update_boat, delete_boat
-from backend_v2.modules.config.crud import get_company_info
-from backend_v2.core.integrations import trigger_n8n_event
+from core.database import get_db
+from core.dependencies import get_current_user
+from modules.auth.models import User
+from modules.boats.schemas import BoatRead, BoatCreate, BoatUpdate
+from modules.boats.crud import get_boats, get_boat, create_boat, update_boat, delete_boat
+from modules.config.crud import get_company_info
+from core.integrations import trigger_n8n_event
 
 router = APIRouter(prefix="/api/boats", tags=["Embarcações"])
 
@@ -20,7 +20,7 @@ def list_boats(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    from backend_v2.modules.auth.models import UserRole
+    from modules.auth.models import UserRole
     if current_user.role == UserRole.CLIENT:
         client_id = current_user.client_id
     return get_boats(db, tenant_id=current_user.tenant_id, client_id=client_id)

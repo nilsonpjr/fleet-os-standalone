@@ -13,7 +13,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 
-from backend_v2.core.database import Base
+from core.database import Base
 
 
 # ── Enums ──────────────────────────────────────────────────────────────────

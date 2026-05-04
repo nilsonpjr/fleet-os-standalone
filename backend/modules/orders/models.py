@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 from sqlalchemy import Column, Integer, String, Float, DateTime, Enum, Text, JSON, ForeignKey
 from sqlalchemy.orm import relationship
 
-from backend_v2.core.database import Base
+from core.database import Base
 
 
 class OSStatus(str, enum.Enum):

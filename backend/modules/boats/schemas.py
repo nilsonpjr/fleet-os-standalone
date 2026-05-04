@@ -1,6 +1,6 @@
 """Boats module schemas."""
 from typing import Optional, List
-from backend_v2.core.schemas import CamelModel
+from core.schemas import CamelModel
 
 
 class EngineBase(CamelModel):

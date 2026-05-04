@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from datetime import datetime, timezone
 from pydantic import BaseModel
-from backend_v2.core.database import get_db
-from backend_v2.modules.fleet.models import Vehicle
+from core.database import get_db
+from modules.fleet.models import Vehicle
 
 router = APIRouter(prefix="/api/telemetry", tags=["Telemetry"])
 

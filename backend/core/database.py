@@ -1,5 +1,5 @@
 """
-Database configuration for backend_v2.
+Database configuration for 
 Sets up SQLAlchemy engine, session factory, Base class and tenant-aware RLS middleware.
 Same logic as backend/database.py — rewritten with updated imports.
 """
@@ -10,16 +10,14 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine, event, inspect, text
 from sqlalchemy.orm import declarative_base, sessionmaker, Session
 
-from backend_v2.core.logger import get_logger
+from core.logger import get_logger
 
 logger = get_logger("database")
 
-# Load .env — look in the backend/ directory (same DB config)
+# Load .env — look in the current directory
 _env_path = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)),  # backend_v2/core/
-    "..",  # backend_v2/
-    "..",  # project root
-    "backend",
+    os.path.dirname(os.path.abspath(__file__)),
+    "..",
     ".env",
 )
 load_dotenv(_env_path)
@@ -53,7 +51,7 @@ def get_db():
 def _get_tenant_id() -> Optional[int]:
     """Retrieve current tenant_id from context (thread-local or ContextVar)."""
     try:
-        from backend_v2.core.context import get_tenant_id
+        from core.context import get_tenant_id
         return get_tenant_id()
     except ImportError:
         return None

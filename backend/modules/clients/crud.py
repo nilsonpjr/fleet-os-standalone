@@ -2,8 +2,8 @@
 from typing import Optional
 from sqlalchemy.orm import Session
 
-from backend_v2.modules.clients.models import Client, Marina
-from backend_v2.modules.clients.schemas import ClientCreate, ClientUpdate, MarinaCreate
+from modules.clients.models import Client, Marina
+from modules.clients.schemas import ClientCreate, ClientUpdate, MarinaCreate
 
 
 def get_clients(db: Session, tenant_id: int) -> list[Client]:

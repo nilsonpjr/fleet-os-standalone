@@ -2,9 +2,9 @@
 from typing import Optional, List
 from sqlalchemy.orm import Session
 
-from backend_v2.modules.boats.models import Boat, Engine
-from backend_v2.modules.boats.schemas import BoatCreate, BoatUpdate
-from backend_v2.modules.orders.models import ServiceOrder
+from modules.boats.models import Boat, Engine
+from modules.boats.schemas import BoatCreate, BoatUpdate
+from modules.orders.models import ServiceOrder
 
 
 def get_boats(db: Session, tenant_id: int, client_id: Optional[int] = None) -> List[Boat]:

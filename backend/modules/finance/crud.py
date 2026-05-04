@@ -1,7 +1,7 @@
 """Finance module CRUD."""
 from sqlalchemy.orm import Session
-from backend_v2.modules.finance.models import Transaction
-from backend_v2.modules.finance.schemas import TransactionCreate
+from modules.finance.models import Transaction
+from modules.finance.schemas import TransactionCreate
 
 
 def get_transactions(db: Session, tenant_id: int) -> list[Transaction]:

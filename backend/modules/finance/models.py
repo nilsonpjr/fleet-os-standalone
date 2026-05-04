@@ -5,7 +5,7 @@ Tables: transactions
 from sqlalchemy import Column, Integer, String, Float, DateTime, Text, ForeignKey
 from datetime import datetime, timezone
 
-from backend_v2.core.database import Base
+from core.database import Base
 
 
 class Transaction(Base):

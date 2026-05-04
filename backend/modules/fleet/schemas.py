@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Optional, List
 from pydantic import BaseModel, Field
 
-from backend_v2.modules.fleet.models import (
+from modules.fleet.models import (
     VehicleCategory, FuelType, RequestStatus, Urgency,
     QuoteStatus, QuoteItemType, ExecutionApprovalStatus,
 )
