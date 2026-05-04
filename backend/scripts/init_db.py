@@ -6,8 +6,8 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 
 from core.database import Base, engine
-# Importa todos os modelos para garantir que o SQLAlchemy os conheça
-from main import * 
+# Import all models to ensure they are registered with Base.metadata
+import main
 
 def init_db():
     print("🛠️ Inicializando o esquema do banco de dados no novo Supabase...")

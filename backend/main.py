@@ -67,22 +67,7 @@ from modules.fleet.models import (                       # noqa: F401
 )
 from modules.notifications.models import Notification       # noqa: F401
 
-# Create tables that don't exist yet (non-destructive)
-print("DEBUG: Calling create_all...")
-Base.metadata.create_all(bind=engine)
-print("DEBUG: create_all finished")
-
-# Schema Evolution: Add missing telemetry columns to existing tables
-ensure_columns("vehicles", [
-    ("last_lat", "FLOAT"),
-    ("last_lng", "FLOAT"),
-    ("last_sync_at", "TIMESTAMP")
-])
-ensure_columns("workshops", [
-    ("last_lat", "FLOAT"),
-    ("last_lng", "FLOAT"),
-    ("last_sync_at", "TIMESTAMP")
-])
+# Tables are now created inside the startup event to avoid blocking the server boot.
 
 # ------------------------------------------------------------------
 # Import routers
@@ -174,6 +159,26 @@ async def startup_security_checks():
             sys.exit(1)
         else:
             logger.warning(msg)
+    
+    # Initialize Database Schema
+    try:
+        logger.info("🛠️ Inciando criação/verificação de tabelas...")
+        Base.metadata.create_all(bind=engine)
+        
+        # Schema Evolution
+        ensure_columns("vehicles", [
+            ("last_lat", "FLOAT"),
+            ("last_lng", "FLOAT"),
+            ("last_sync_at", "TIMESTAMP")
+        ])
+        ensure_columns("workshops", [
+            ("last_lat", "FLOAT"),
+            ("last_lng", "FLOAT"),
+            ("last_sync_at", "TIMESTAMP")
+        ])
+        logger.info("✅ Banco de dados pronto!")
+    except Exception as e:
+        logger.error(f"❌ Erro na inicialização do DB: {e}")
 
 
 # ------------------------------------------------------------------
