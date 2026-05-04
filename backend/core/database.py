@@ -24,14 +24,17 @@ load_dotenv(_env_path)
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
+# Sanitize: Remove pgbouncer parameter which is incompatible with psycopg2/SQLAlchemy
+if DATABASE_URL and "pgbouncer" in DATABASE_URL:
+    # Remove pgbouncer=... regardless of where it is in the query string
+    DATABASE_URL = re.sub(r'(\?|&)pgbouncer=[^&]*', '', DATABASE_URL)
+    # Fix potential broken URL (e.g. ?& or trailing ?)
+    DATABASE_URL = DATABASE_URL.replace("?&", "?").rstrip("?")
+
 if not DATABASE_URL:
     raise ValueError(
         "DATABASE_URL não está definida. Configure a conexão com o banco de dados."
     )
-
-# Sanitize: Remove pgbouncer=true which is incompatible with psycopg2/SQLAlchemy
-if "pgbouncer=" in DATABASE_URL:
-    DATABASE_URL = DATABASE_URL.replace("?pgbouncer=true", "").replace("&pgbouncer=true", "")
 
 if DATABASE_URL.startswith("postgres://"):
     # SQLAlchemy requires postgresql:// instead of postgres://

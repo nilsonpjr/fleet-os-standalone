@@ -20,7 +20,7 @@ if sys.platform == "win32":
 # Load .env from the current directory
 load_dotenv(
     os.path.join(os.path.dirname(__file__), ".env"),
-    override=True,
+    override=False,
 )
 
 from fastapi import FastAPI, Request
