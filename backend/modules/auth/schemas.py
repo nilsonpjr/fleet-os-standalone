@@ -27,6 +27,7 @@ class UserCreate(BaseModel):
     password: str
     role: str = "TECHNICIAN"
     client_id: Optional[int] = None
+    partner_id: Optional[int] = None
 
 
 class UserUpdate(BaseModel):
@@ -34,6 +35,8 @@ class UserUpdate(BaseModel):
     email: Optional[EmailStr] = None
     password: Optional[str] = None
     role: Optional[str] = None
+    client_id: Optional[int] = None
+    partner_id: Optional[int] = None
 
 
 class TenantSignup(BaseModel):

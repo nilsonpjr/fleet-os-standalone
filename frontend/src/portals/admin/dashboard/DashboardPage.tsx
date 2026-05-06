@@ -61,8 +61,8 @@ export default function AdminDashboard() {
     setLoadingStats(true)
     try {
       const [orders, boats, vehicles] = await Promise.all([
-        api.get<any[]>('/api/orders').catch(() => []),
-        api.get<any[]>('/api/boats').catch(() => []),
+        api.get<any[]>('/api/fleet/requests').catch(() => []),
+        api.get<any[]>('/api/fleet/boats').catch(() => []),
         api.get<any[]>('/api/fleet/vehicles').catch(() => []),
       ])
 
@@ -90,9 +90,9 @@ export default function AdminDashboard() {
         }
       }
 
-      const openStatuses = ['Pendente', 'Em Orçamento', 'Aprovado', 'Em Execução', 'ASSIGNED', 'QUOTED', 'IN_PROGRESS']
+      const openStatuses = ['OPEN', 'ASSIGNED', 'QUOTED', 'IN_PROGRESS', 'AWAITING_CLOSURE', 'ADMIN_APPROVED', 'CLIENT_APPROVED', 'REVISION_REQUESTED']
       const openOrders = orders.filter((o) => openStatuses.includes(o.status)).length
-      const pendingQuotes = orders.filter((o) => o.status === 'Em Orçamento' || o.status === 'ASSIGNED').length
+      const pendingQuotes = orders.filter((o) => o.status === 'QUOTED' || o.status === 'ASSIGNED').length
 
       // Get last 4 months for history
       const history = Object.entries(monthlyData)
@@ -410,7 +410,7 @@ export default function AdminDashboard() {
                   <span className="text-xs font-mono font-bold text-slate-500 w-12 shrink-0">
                     #{String(o.id).padStart(4, '0')}
                   </span>
-                  <p className="flex-1 text-sm text-slate-300 truncate">{o.description}</p>
+                  <p className="flex-1 text-sm text-slate-300 truncate">{o.problem_description}</p>
                   <StatusBadge status={o.status} />
                   <span className="text-[10px] text-slate-500 shrink-0">
                     {new Date(o.created_at || o.createdAt).toLocaleDateString('pt-BR')}

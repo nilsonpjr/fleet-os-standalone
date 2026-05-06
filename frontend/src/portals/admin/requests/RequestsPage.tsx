@@ -159,7 +159,7 @@ export default function RequestsPage() {
       if (!needle) return true
       return (
         String(r.id).includes(needle) ||
-        r.problem_description.toLowerCase().includes(needle)
+        (r.problem_description || '').toLowerCase().includes(needle)
       )
     })
   }, [requests, search, statusFilter])

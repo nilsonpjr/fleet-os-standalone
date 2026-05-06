@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Building2, Save, Settings2, ShieldCheck, Wallet, Wrench } from 'lucide-react'
+import { Building2, Save, Settings2, ShieldCheck, Wallet, Wrench, Key, Users } from 'lucide-react'
 import api from '@core/api/client'
+import UsersTab from './UsersTab'
 
 type CompanyConfig = {
   company_name: string
@@ -76,6 +77,7 @@ export default function SettingsPage() {
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [activeTab, setActiveTab] = useState<'COMPANY' | 'USERS'>('COMPANY')
 
   useEffect(() => {
     const load = async () => {
@@ -149,9 +151,30 @@ export default function SettingsPage() {
       </div>
 
       {error && <div className="px-4 py-3 rounded-xl border border-red-500/30 bg-red-500/10 text-red-300 text-sm">{error}</div>}
-      {message && <div className="px-4 py-3 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-300 text-sm">{message}</div>}
+      <div className="flex gap-4 border-b border-navy-700 pb-2">
+        <button
+          onClick={() => setActiveTab('COMPANY')}
+          className={`flex items-center gap-2 px-4 py-2 text-sm font-bold border-b-2 transition-all ${
+            activeTab === 'COMPANY' ? 'border-amber-500 text-amber-400' : 'border-transparent text-slate-500 hover:text-slate-300'
+          }`}
+        >
+          <Building2 className="w-4 h-4" />
+          Dados da Empresa
+        </button>
+        <button
+          onClick={() => setActiveTab('USERS')}
+          className={`flex items-center gap-2 px-4 py-2 text-sm font-bold border-b-2 transition-all ${
+            activeTab === 'USERS' ? 'border-amber-500 text-amber-400' : 'border-transparent text-slate-500 hover:text-slate-300'
+          }`}
+        >
+          <Key className="w-4 h-4" />
+          Gestão de Acessos
+        </button>
+      </div>
 
-      <section className="bg-navy-800 border border-navy-700 rounded-2xl p-5 space-y-4">
+      {activeTab === 'COMPANY' && (
+        <div className="space-y-6">
+          <section className="bg-navy-800 border border-navy-700 rounded-2xl p-5 space-y-4">
         <h2 className="text-sm font-bold text-slate-200 flex items-center gap-2">
           <Building2 className="w-4 h-4 text-amber-400" />
           Identificação da Empresa
@@ -227,6 +250,12 @@ export default function SettingsPage() {
           <input value={form.labor_rate_high} onChange={(e) => onChange('labor_rate_high', e.target.value)} placeholder="Alta complexidade" className={inputClassName()} />
         </div>
       </section>
+        </div>
+      )}
+
+      {activeTab === 'USERS' && (
+        <UsersTab />
+      )}
     </div>
   )
 }
