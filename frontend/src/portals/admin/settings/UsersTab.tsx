@@ -137,7 +137,7 @@ export default function UsersTab() {
             {loading ? (
               <tr><td colSpan={4} className="p-4"><TableSkeleton rows={4} /></td></tr>
             ) : users.length === 0 ? (
-              <tr><td colSpan={4}><EmptyState title="Nenhum usuário" description="Nenhum acesso cadastrado." /></td></tr>
+              <tr><td colSpan={4}><EmptyState icon={<User className="w-8 h-8" />} title="Nenhum usuário" description="Nenhum acesso cadastrado." /></td></tr>
             ) : (
               users.map(u => (
                 <tr key={u.id} className="hover:bg-navy-700/20">
