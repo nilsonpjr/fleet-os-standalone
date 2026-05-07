@@ -14,7 +14,7 @@ export default function BoatDetailPage() {
   const [activeTab, setActiveTab] = useState('GERAL')
   const [showEditModal, setShowEditModal] = useState(false)
 
-  const { data: boat, loading, error, mutate } = useApi<any>(() => 
+  const { data: boat, loading, error, refetch } = useApi<any>(() => 
     api.get(`/api/boats/${id}`)
   )
 
@@ -238,7 +238,7 @@ export default function BoatDetailPage() {
       {showEditModal && (
         <CreateBoatModal 
           onClose={() => setShowEditModal(false)}
-          onSuccess={() => { mutate(); }}
+          onSuccess={() => { refetch(); }}
           initialData={boat}
         />
       )}
