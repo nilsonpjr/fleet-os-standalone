@@ -5,24 +5,25 @@ import api from '@core/api/client'
 interface CreateBoatModalProps {
   onClose: () => void
   onSuccess: () => void
+  initialData?: any
 }
 
-export function CreateBoatModal({ onClose, onSuccess }: CreateBoatModalProps) {
+export function CreateBoatModal({ onClose, onSuccess, initialData }: CreateBoatModalProps) {
   const [loading, setLoading] = useState(false)
   const [activeTab, setActiveTab] = useState(0)
   const [formData, setFormData] = useState({
-    name: '',
-    type: 'LANCHA',
-    brand: '',
-    model: '',
-    year: new Date().getFullYear(),
-    registration_number: '',
-    tmc_expiration: '',
-    insurance_expiration: '',
-    antf_expiration: '',
-    client_id: '',
-    engine_type: 'CENTRO-RABETA',
-    fuel_type: 'DIESEL',
+    name: initialData?.name || '',
+    type: initialData?.type || 'LANCHA',
+    brand: initialData?.brand || '',
+    model: initialData?.model || '',
+    year: initialData?.year || new Date().getFullYear(),
+    registration_number: initialData?.registration_number || '',
+    tmc_expiration: initialData?.tmc_expiration || '',
+    insurance_expiration: initialData?.insurance_expiration || '',
+    antf_expiration: initialData?.antf_expiration || '',
+    client_id: initialData?.client_id || '',
+    engine_type: initialData?.engine_type || 'CENTRO-RABETA',
+    fuel_type: initialData?.fuel_type || 'DIESEL',
   })
 
   const tabs = [
@@ -35,7 +36,11 @@ export function CreateBoatModal({ onClose, onSuccess }: CreateBoatModalProps) {
     e.preventDefault()
     setLoading(true)
     try {
-      await api.post('/api/boats', formData)
+      if (initialData?.id) {
+        await api.put(`/api/boats/${initialData.id}`, formData)
+      } else {
+        await api.post('/api/boats', formData)
+      }
       onSuccess()
       onClose()
     } catch (err) {
@@ -57,7 +62,7 @@ export function CreateBoatModal({ onClose, onSuccess }: CreateBoatModalProps) {
               <Ship className="w-6 h-6" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-slate-100">Nova Embarcação</h2>
+              <h2 className="text-xl font-bold text-slate-100">{initialData ? 'Editar Embarcação' : 'Nova Embarcação'}</h2>
               <p className="text-xs text-slate-500 uppercase tracking-widest font-bold">Cadastro de Frota</p>
             </div>
           </div>

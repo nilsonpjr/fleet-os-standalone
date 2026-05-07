@@ -6,13 +6,15 @@ import { useApi } from '@shared/hooks/useApi'
 import AssetHistoryTab from '@shared/components/AssetHistoryTab'
 import AssetCostStats from '@shared/components/AssetCostStats'
 import AssetHealthCard from '@shared/components/AssetHealthCard'
+import { CreateBoatModal } from './components/CreateBoatModal'
 
 export default function BoatDetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('GERAL')
+  const [showEditModal, setShowEditModal] = useState(false)
 
-  const { data: boat, loading, error } = useApi<any>(() => 
+  const { data: boat, loading, error, mutate } = useApi<any>(() => 
     api.get(`/api/boats/${id}`)
   )
 
@@ -48,7 +50,10 @@ export default function BoatDetailPage() {
           </div>
         </div>
         <div className="flex gap-2">
-          <button className="px-4 py-2 rounded-xl border border-navy-700 text-slate-300 font-bold hover:bg-navy-800 transition-all text-sm flex items-center gap-2">
+          <button 
+            onClick={() => setShowEditModal(true)}
+            className="px-4 py-2 rounded-xl border border-navy-700 text-slate-300 font-bold hover:bg-navy-800 transition-all text-sm flex items-center gap-2"
+          >
             <Settings className="w-4 h-4" /> Editar
           </button>
           <button className="px-4 py-2 rounded-xl bg-sky-500 text-white font-bold hover:bg-sky-400 transition-all text-sm flex items-center gap-2">
@@ -229,6 +234,14 @@ export default function BoatDetailPage() {
           </div>
         </div>
       </div>
+
+      {showEditModal && (
+        <CreateBoatModal 
+          onClose={() => setShowEditModal(false)}
+          onSuccess={() => { mutate(); }}
+          initialData={boat}
+        />
+      )}
     </div>
   )
 }
