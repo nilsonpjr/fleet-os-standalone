@@ -41,6 +41,7 @@ const WorkshopRequestsPage = lazy(() => import('@portals/workshop/requests/Reque
 const QuoteBuilderPage  = lazy(() => import('@portals/workshop/quotes/QuoteBuilderPage'))
 const ExecutionPage     = lazy(() => import('@portals/workshop/execution/ExecutionPage'))
 const WorkshopExecutionDetail = lazy(() => import('@portals/workshop/execution/WorkshopExecutionDetail'))
+const WorkshopSettingsPage = lazy(() => import('@portals/workshop/settings/WorkshopSettingsPage'))
 
 const ADMIN_ROLES = ['ADMIN', 'MANAGER', 'TECHNICIAN'] as const
 
@@ -100,6 +101,7 @@ export default function App() {
               <Route path="/workshop/requests/:id/quote" element={<QuoteBuilderPage />} />
               <Route path="/workshop/execution"          element={<ExecutionPage />} />
               <Route path="/workshop/execution/:id"      element={<WorkshopExecutionDetail />} />
+              <Route path="/workshop/settings"           element={<WorkshopSettingsPage />} />
             </Route>
           </Route>
 

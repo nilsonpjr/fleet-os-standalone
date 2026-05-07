@@ -191,7 +191,7 @@ def list_assigned_requests(db: Session = Depends(get_db), current_user: User = D
     from modules.fleet.models import Workshop
     workshop = db.query(Workshop).filter(
         Workshop.tenant_id == current_user.tenant_id,
-        Workshop.partner_id == getattr(current_user, "partner_id", None),
+        Workshop.id == getattr(current_user, "partner_id", None),
     ).first()
     if not workshop:
         return []
@@ -312,7 +312,7 @@ def create_quote(
     from modules.fleet.models import Workshop
     workshop = db.query(Workshop).filter(
         Workshop.tenant_id == current_user.tenant_id,
-        Workshop.partner_id == getattr(current_user, "partner_id", None),
+        Workshop.id == getattr(current_user, "partner_id", None),
     ).first()
     if not workshop:
         raise HTTPException(status_code=403, detail="Nenhuma oficina vinculada ao usuário.")
@@ -351,7 +351,7 @@ def submit_quote(
     from modules.fleet.models import Workshop
     workshop = db.query(Workshop).filter(
         Workshop.tenant_id == current_user.tenant_id,
-        Workshop.partner_id == getattr(current_user, "partner_id", None),
+        Workshop.id == getattr(current_user, "partner_id", None),
     ).first()
     if not workshop:
         raise HTTPException(status_code=403)
@@ -373,7 +373,7 @@ def update_execution(
     from modules.fleet.models import Workshop
     workshop = db.query(Workshop).filter(
         Workshop.tenant_id == current_user.tenant_id,
-        Workshop.partner_id == getattr(current_user, "partner_id", None),
+        Workshop.id == getattr(current_user, "partner_id", None),
     ).first()
     if not workshop:
         raise HTTPException(status_code=403)
@@ -392,7 +392,7 @@ def request_closure(
     from modules.fleet.models import Workshop
     workshop = db.query(Workshop).filter(
         Workshop.tenant_id == current_user.tenant_id,
-        Workshop.partner_id == getattr(current_user, "partner_id", None),
+        Workshop.id == getattr(current_user, "partner_id", None),
     ).first()
     if not workshop:
         raise HTTPException(status_code=403)

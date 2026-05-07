@@ -136,3 +136,94 @@ def delete_user(
     db.delete(db_user)
     db.commit()
     return None
+
+
+@router.get("/users/workshop", response_model=List[UserRead])
+def get_workshop_users(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    if current_user.role != UserRole.PARTNER or not current_user.partner_id:
+        raise HTTPException(status_code=403, detail="Acesso restrito a Oficinas.")
+    return db.query(User).filter(
+        User.tenant_id == current_user.tenant_id,
+        User.partner_id == current_user.partner_id
+    ).all()
+
+
+@router.post("/register/workshop", response_model=UserRead)
+def register_workshop_user(
+    user: UserCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    if current_user.role != UserRole.PARTNER or not current_user.partner_id:
+        raise HTTPException(status_code=403, detail="Acesso restrito a Oficinas.")
+    if get_user_by_email(db, user.email):
+        raise HTTPException(status_code=400, detail="Email já registrado.")
+    
+    # Force the role and partner_id to match the current workshop
+    user.role = UserRole.PARTNER.value
+    user.partner_id = current_user.partner_id
+    
+    return create_user(db, user, tenant_id=current_user.tenant_id)
+
+
+@router.put("/users/workshop/{user_id}", response_model=UserRead)
+def update_workshop_user(
+    user_id: int,
+    user_update: UserUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    if current_user.role != UserRole.PARTNER or not current_user.partner_id:
+        raise HTTPException(status_code=403, detail="Acesso restrito a Oficinas.")
+    
+    db_user = db.query(User).filter(
+        User.id == user_id, 
+        User.tenant_id == current_user.tenant_id,
+        User.partner_id == current_user.partner_id
+    ).first()
+    
+    if not db_user:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado.")
+    
+    update_data = user_update.model_dump(exclude_unset=True)
+    # Prevent changing role or partner mapping
+    update_data.pop("role", None)
+    update_data.pop("partner_id", None)
+    
+    if "password" in update_data and update_data["password"]:
+        update_data["hashed_password"] = get_password_hash(update_data.pop("password"))
+        
+    for key, value in update_data.items():
+        setattr(db_user, key, value)
+        
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
+
+@router.delete("/users/workshop/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_workshop_user(
+    user_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    if current_user.role != UserRole.PARTNER or not current_user.partner_id:
+        raise HTTPException(status_code=403, detail="Acesso restrito a Oficinas.")
+    
+    db_user = db.query(User).filter(
+        User.id == user_id, 
+        User.tenant_id == current_user.tenant_id,
+        User.partner_id == current_user.partner_id
+    ).first()
+    
+    if not db_user:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado.")
+    if db_user.id == current_user.id:
+        raise HTTPException(status_code=400, detail="Não é possível deletar seu próprio usuário.")
+        
+    db.delete(db_user)
+    db.commit()
+    return None

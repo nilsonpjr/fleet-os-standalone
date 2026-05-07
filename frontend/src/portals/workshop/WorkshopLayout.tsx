@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, ClipboardList, CheckSquare, LogOut, Wrench, Bell } from 'lucide-react'
+import { LayoutDashboard, ClipboardList, CheckSquare, LogOut, Wrench, Bell, Settings2 } from 'lucide-react'
 import { useAuthStore } from '@core/auth/store'
 import NotificationBell from '@shared/components/NotificationBell'
 
@@ -7,6 +7,7 @@ const workshopNav = [
   { to: '/workshop/dashboard', icon: <LayoutDashboard className="w-5 h-5" />, label: 'Painel' },
   { to: '/workshop/requests',  icon: <ClipboardList className="w-5 h-5" />,   label: 'Solicitações' },
   { to: '/workshop/execution', icon: <CheckSquare className="w-5 h-5" />,     label: 'Em Execução' },
+  { to: '/workshop/settings',  icon: <Settings2 className="w-5 h-5" />,       label: 'Configurações' },
 ]
 
 export default function WorkshopLayout() {
