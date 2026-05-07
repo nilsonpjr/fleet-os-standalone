@@ -227,3 +227,95 @@ def delete_workshop_user(
     db.delete(db_user)
     db.commit()
     return None
+
+
+@router.get("/users/client", response_model=List[UserRead])
+def get_client_users(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    if current_user.role != UserRole.CLIENT or not current_user.client_id:
+        raise HTTPException(status_code=403, detail="Acesso restrito a Clientes.")
+    return db.query(User).filter(
+        User.tenant_id == current_user.tenant_id,
+        User.client_id == current_user.client_id
+    ).all()
+
+
+@router.post("/register/client", response_model=UserRead)
+def register_client_user(
+    user: UserCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    if current_user.role != UserRole.CLIENT or not current_user.client_id:
+        raise HTTPException(status_code=403, detail="Acesso restrito a Clientes.")
+    if get_user_by_email(db, user.email):
+        raise HTTPException(status_code=400, detail="Email já registrado.")
+    
+    # Force the role and client_id to match the current client
+    user.role = UserRole.CLIENT.value
+    user.client_id = current_user.client_id
+    
+    return create_user(db, user, tenant_id=current_user.tenant_id)
+
+
+@router.put("/users/client/{user_id}", response_model=UserRead)
+def update_client_user(
+    user_id: int,
+    user_update: UserUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    if current_user.role != UserRole.CLIENT or not current_user.client_id:
+        raise HTTPException(status_code=403, detail="Acesso restrito a Clientes.")
+    
+    db_user = db.query(User).filter(
+        User.id == user_id, 
+        User.tenant_id == current_user.tenant_id,
+        User.client_id == current_user.client_id
+    ).first()
+    
+    if not db_user:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado.")
+    
+    update_data = user_update.model_dump(exclude_unset=True)
+    # Prevent changing role or client mapping
+    update_data.pop("role", None)
+    update_data.pop("client_id", None)
+    update_data.pop("partner_id", None)
+    
+    if "password" in update_data and update_data["password"]:
+        update_data["hashed_password"] = get_password_hash(update_data.pop("password"))
+        
+    for key, value in update_data.items():
+        setattr(db_user, key, value)
+        
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
+
+@router.delete("/users/client/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_client_user(
+    user_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    if current_user.role != UserRole.CLIENT or not current_user.client_id:
+        raise HTTPException(status_code=403, detail="Acesso restrito a Clientes.")
+    
+    db_user = db.query(User).filter(
+        User.id == user_id, 
+        User.tenant_id == current_user.tenant_id,
+        User.client_id == current_user.client_id
+    ).first()
+    
+    if not db_user:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado.")
+    if db_user.id == current_user.id:
+        raise HTTPException(status_code=400, detail="Não é possível deletar seu próprio usuário.")
+        
+    db.delete(db_user)
+    db.commit()
+    return None

@@ -34,6 +34,7 @@ const NewRequestPage   = lazy(() => import('@portals/client/requests/NewRequestP
 const RequestDetailClientPage = lazy(() => import('@portals/client/requests/RequestDetailPage'))
 const AssetDetailPage      = lazy(() => import('@portals/client/fleet/AssetDetailPage'))
 const ClientAssetHistoryPage = lazy(() => import('@portals/client/fleet/ClientAssetHistoryPage'))
+const ClientProfilePage    = lazy(() => import('@portals/client/settings/ClientProfilePage'))
 
 // Workshop portal pages
 const WorkshopDashboard = lazy(() => import('@portals/workshop/dashboard/DashboardPage'))
@@ -90,6 +91,7 @@ export default function App() {
               <Route path="/client/requests/:id"     element={<RequestDetailClientPage />} />
               <Route path="/client/fleet/:id"        element={<AssetDetailPage />} />
               <Route path="/client/fleet/:id/history" element={<ClientAssetHistoryPage />} />
+              <Route path="/client/profile"          element={<ClientProfilePage />} />
             </Route>
           </Route>
 

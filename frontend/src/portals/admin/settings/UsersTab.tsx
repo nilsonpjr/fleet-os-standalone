@@ -29,6 +29,7 @@ export default function UsersTab() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [showModal, setShowModal] = useState(false)
+  const [editingUser, setEditingUser] = useState<SystemUser | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   const [formData, setFormData] = useState({
@@ -80,8 +81,13 @@ export default function UsersTab() {
         payload.partner_id = Number(formData.partner_id)
       }
 
-      await api.post('/api/auth/register', payload)
+      if (editingUser) {
+        await api.put(`/api/auth/users/${editingUser.id}`, payload)
+      } else {
+        await api.post('/api/auth/register', payload)
+      }
       setShowModal(false)
+      setEditingUser(null)
       setFormData({ name: '', email: '', password: '', role: 'TECHNICIAN', client_id: '', partner_id: '' })
       loadData()
     } catch (err: any) {
@@ -101,6 +107,25 @@ export default function UsersTab() {
     }
   }
 
+  const openNew = () => {
+    setEditingUser(null)
+    setFormData({ name: '', email: '', password: '', role: 'TECHNICIAN', client_id: '', partner_id: '' })
+    setShowModal(true)
+  }
+
+  const openEdit = (u: SystemUser) => {
+    setEditingUser(u)
+    setFormData({
+      name: u.name,
+      email: u.email,
+      password: '',
+      role: u.role,
+      client_id: u.client_id ? String(u.client_id) : '',
+      partner_id: u.partner_id ? String(u.partner_id) : ''
+    })
+    setShowModal(true)
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -115,7 +140,7 @@ export default function UsersTab() {
           <button onClick={loadData} className="p-2 rounded-xl border border-navy-700 text-slate-400 hover:text-slate-200">
             <RefreshCw className="w-4 h-4" />
           </button>
-          <button onClick={() => setShowModal(true)} className="flex items-center gap-2 px-3 py-2 bg-amber-500 text-navy-950 text-sm font-bold rounded-xl hover:bg-amber-400">
+          <button onClick={openNew} className="flex items-center gap-2 px-3 py-2 bg-amber-500 text-navy-950 text-sm font-bold rounded-xl hover:bg-amber-400">
             <Plus className="w-4 h-4" /> Novo Acesso
           </button>
         </div>
@@ -168,7 +193,10 @@ export default function UsersTab() {
                     )}
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <button onClick={() => handleDelete(u.id)} className="text-xs text-red-400 hover:underline">Remover</button>
+                    <div className="flex items-center justify-end gap-3">
+                      <button onClick={() => openEdit(u)} className="text-xs font-bold text-blue-400 hover:text-blue-300">Editar</button>
+                      <button onClick={() => handleDelete(u.id)} className="text-xs font-bold text-red-400 hover:text-red-300">Remover</button>
+                    </div>
                   </td>
                 </tr>
               ))
@@ -181,7 +209,7 @@ export default function UsersTab() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
           <div className="bg-navy-800 border border-navy-700 rounded-2xl w-full max-w-md overflow-hidden">
             <div className="p-4 border-b border-navy-700">
-              <h3 className="text-lg font-bold text-slate-100">Novo Acesso (Login)</h3>
+              <h3 className="text-lg font-bold text-slate-100">{editingUser ? 'Editar Acesso' : 'Novo Acesso (Login)'}</h3>
             </div>
             <form onSubmit={handleSave} className="p-4 space-y-4">
               <div>
@@ -193,8 +221,10 @@ export default function UsersTab() {
                 <input type="email" required value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full px-3 py-2 rounded-xl bg-navy-900 border border-navy-700 text-slate-200 text-sm" />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-400 mb-1">Senha Temporária</label>
-                <input type="password" required value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} className="w-full px-3 py-2 rounded-xl bg-navy-900 border border-navy-700 text-slate-200 text-sm" />
+                <label className="block text-xs font-bold text-slate-400 mb-1">
+                  {editingUser ? 'Nova Senha (deixe em branco para manter)' : 'Senha Temporária'}
+                </label>
+                <input type={editingUser ? "password" : "text"} required={!editingUser} value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} className="w-full px-3 py-2 rounded-xl bg-navy-900 border border-navy-700 text-slate-200 text-sm" />
               </div>
               <div>
                 <label className="block text-xs font-bold text-slate-400 mb-1">Nível de Acesso (Role)</label>
@@ -230,7 +260,7 @@ export default function UsersTab() {
               <div className="pt-4 flex gap-2 justify-end">
                 <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 text-sm text-slate-400 hover:text-slate-200">Cancelar</button>
                 <button type="submit" disabled={saving} className="px-4 py-2 bg-amber-500 text-navy-950 font-bold rounded-xl text-sm hover:bg-amber-400 disabled:opacity-50">
-                  {saving ? 'Criando...' : 'Criar Acesso'}
+                  {saving ? 'Salvando...' : 'Salvar Acesso'}
                 </button>
               </div>
             </form>
