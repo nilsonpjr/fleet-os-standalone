@@ -29,7 +29,7 @@ export default function ChatWidget({ requestId }: ChatWidgetProps) {
   const fetchMessages = async () => {
     try {
       const res = await api.get<any>(`/api/fleet/requests/${requestId}/messages`)
-      setMessages(res.data)
+      setMessages(Array.isArray(res) ? res : (res?.data || []))
     } catch (err) {
       console.error('Erro ao buscar mensagens:', err)
     }
@@ -54,7 +54,8 @@ export default function ChatWidget({ requestId }: ChatWidgetProps) {
       const res = await api.post<any>(`/api/fleet/requests/${requestId}/messages`, {
         message: newMessage
       })
-      setMessages(prev => [...prev, res.data])
+      const newMsg = res?.data ?? res
+      setMessages(prev => [...prev, newMsg])
       setNewMessage('')
     } catch (err) {
       alert('Erro ao enviar mensagem')
