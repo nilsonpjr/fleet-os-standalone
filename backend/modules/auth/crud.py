@@ -42,6 +42,7 @@ def create_user(
         hashed_password=get_password_hash(user.password),
         role=UserRole(user.role),
         client_id=user.client_id,
+        partner_id=user.partner_id,
     )
     db.add(db_user)
     db.commit()
