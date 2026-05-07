@@ -55,6 +55,7 @@ interface RequestSummary {
 import AssetHistoryTab from '@shared/components/AssetHistoryTab'
 import AssetCostStats from '@shared/components/AssetCostStats'
 import AssetHealthCard from '@shared/components/AssetHealthCard'
+import { CreateVehicleModal } from './components/CreateVehicleModal'
 
 export default function VehicleDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -63,6 +64,7 @@ export default function VehicleDetailPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<'GERAL' | 'HISTORY' | 'STATS'>('GERAL')
+  const [showEditModal, setShowEditModal] = useState(false)
 
   const loadData = async () => {
     if (!id) return
@@ -126,6 +128,14 @@ export default function VehicleDetailPage() {
               {vehicle.brand} {vehicle.model} • {vehicle.year_model || vehicle.year_manufacture || '—'}
             </p>
           </div>
+        </div>
+        <div className="flex gap-2">
+          <button 
+            onClick={() => setShowEditModal(true)}
+            className="px-4 py-2 rounded-xl border border-navy-700 text-slate-300 font-bold hover:bg-navy-800 transition-all text-sm flex items-center gap-2"
+          >
+            <Settings className="w-4 h-4" /> Editar
+          </button>
         </div>
       </div>
 
@@ -336,6 +346,14 @@ export default function VehicleDetailPage() {
           </div>
         </div>
       </div>
+
+      {showEditModal && vehicle && (
+        <CreateVehicleModal 
+          onClose={() => setShowEditModal(false)}
+          onSuccess={loadData}
+          initialData={vehicle}
+        />
+      )}
     </div>
   )
 }
