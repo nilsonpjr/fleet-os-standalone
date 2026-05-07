@@ -20,10 +20,12 @@ export default function ChatWidget({ requestId }: ChatWidgetProps) {
   const [messages, setMessages] = useState<Message[]>([])
   const [newMessage, setNewMessage] = useState('')
   const [loading, setLoading] = useState(false)
-  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const chatContainerRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight
+    }
   }
 
   const fetchMessages = async () => {
@@ -74,7 +76,7 @@ export default function ChatWidget({ requestId }: ChatWidgetProps) {
         </span>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar bg-navy-950/20">
+      <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar bg-navy-950/20">
         {messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-center opacity-40">
              <div className="w-12 h-12 bg-navy-800 rounded-full flex items-center justify-center mb-2">
@@ -105,7 +107,6 @@ export default function ChatWidget({ requestId }: ChatWidgetProps) {
             </div>
           ))
         )}
-        <div ref={messagesEndRef} />
       </div>
 
       <form onSubmit={handleSendMessage} className="p-4 border-t border-navy-700 bg-navy-800/30">
