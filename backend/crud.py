@@ -11,10 +11,10 @@ from typing import List, Optional, Dict, Any
 import re
 import unicodedata
 
-from backend import models
-from backend import schemas
-from backend.auth import get_password_hash
-from backend.security import encrypt_value, decrypt_value # Importa funções de criptografia
+import models
+import schemas
+from auth import get_password_hash
+from security import encrypt_value, decrypt_value # Importa funções de criptografia
 
 
 def slugify(value: str) -> str:

@@ -8,12 +8,12 @@ from sqlalchemy.orm import Session
 import os
 from dotenv import load_dotenv
 
-from backend import models
-from backend import schemas
-from backend.database import get_db
-from backend import context
-from backend.logger import get_logger
-from backend.security_config import get_secret_key
+import models
+import schemas
+from database import get_db
+import context
+from logger import get_logger
+from security_config import get_secret_key
 
 logger = get_logger("auth")
 

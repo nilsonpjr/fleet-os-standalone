@@ -7,9 +7,9 @@ from core.database import get_db
 from core.dependencies import get_current_user
 from modules.auth.models import User
 from modules.boats.schemas import BoatRead, BoatCreate, BoatUpdate
-from modules.schemas import Manufacturer, Model
+from schemas import Manufacturer, Model
 from modules.boats.crud import get_boats, get_boat, create_boat, update_boat, delete_boat
-from backend.crud import get_manufacturers, get_models
+from crud import get_manufacturers, get_models
 from modules.config.crud import get_company_info
 from core.integrations import trigger_n8n_event
 
