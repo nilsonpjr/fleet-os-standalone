@@ -14,7 +14,7 @@ import unicodedata
 import models
 import schemas
 from auth import get_password_hash
-from security import encrypt_value, decrypt_value # Importa funções de criptografia
+from core.security import encrypt_value, decrypt_value # Importa funções de criptografia
 
 
 def slugify(value: str) -> str:

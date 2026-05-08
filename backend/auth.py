@@ -10,10 +10,10 @@ from dotenv import load_dotenv
 
 import models
 import schemas
-from database import get_db
-import context
-from logger import get_logger
-from security_config import get_secret_key
+from core.database import get_db
+from core import context
+from core.logger import get_logger
+from core.security import get_secret_key
 
 logger = get_logger("auth")
 
