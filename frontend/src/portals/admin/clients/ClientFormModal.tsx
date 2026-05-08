@@ -33,7 +33,6 @@ export default function ClientFormModal({ isOpen, onClose, onSave, initialData, 
     contract_end: '',
     payment_terms: '',
     account_manager: '',
-    account_manager: '',
   })
 
   useEffect(() => {
