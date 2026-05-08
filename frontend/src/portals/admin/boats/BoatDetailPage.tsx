@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft, Ship, Anchor, Wrench, FileText, Settings, ShieldCheck, History, TrendingUp, Plus, X, Save } from 'lucide-react'
 import api from '@core/api/client'
@@ -34,10 +34,16 @@ export default function BoatDetailPage() {
 
   const [selectedManufacturerId, setSelectedManufacturerId] = useState<number | null>(null)
   
-  const { data: catalogModels } = useApi<any[]>(() => 
-    selectedManufacturerId ? api.get(`/api/boats/catalog/manufacturers/${selectedManufacturerId}/models`) : Promise.resolve({ data: [] }),
-    [selectedManufacturerId]
+  const { data: catalogModels, refetch: refetchModels } = useApi<any[]>(() => 
+    selectedManufacturerId ? api.get(`/api/boats/catalog/manufacturers/${selectedManufacturerId}/models`) : Promise.resolve([]),
+    { immediate: false }
   )
+
+  useEffect(() => {
+    if (selectedManufacturerId) {
+      refetchModels()
+    }
+  }, [selectedManufacturerId, refetchModels])
 
   const openAddEngine = () => {
     setEditingEngine(null)
@@ -134,7 +140,7 @@ export default function BoatDetailPage() {
   ]
 
   return (
-    <div className="space-y-6 animate-fadein">
+    <div className="space-y-6 animate-fadein pb-10">
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-4">
@@ -374,7 +380,8 @@ export default function BoatDetailPage() {
               </button>
             </div>
             <div className="p-6 space-y-4 overflow-y-auto max-h-[70vh]">
-              <div className="space-y-1.5">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1.5">
                   <label className="text-[10px] font-bold uppercase text-slate-500">Fabricante / Marca *</label>
                   <select 
                     className="w-full px-4 py-2.5 rounded-xl bg-navy-800 border border-navy-700 text-sm text-slate-100" 
