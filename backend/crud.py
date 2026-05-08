@@ -831,6 +831,14 @@ def create_manufacturer(db: Session, manufacturer: schemas.ManufacturerCreate, t
     db.refresh(db_manufacturer)
     return db_manufacturer
 
+
+def get_manufacturer(db: Session, manufacturer_id: int, tenant_id: int):
+    """Busca um fabricante pelo ID e tenant."""
+    return db.query(models.Manufacturer).filter(
+        models.Manufacturer.id == manufacturer_id,
+        models.Manufacturer.tenant_id == tenant_id
+    ).first()
+
 def delete_manufacturer(db: Session, manufacturer_id: int, tenant_id: int):
     """
     Deleta um fabricante pelo ID e tenant_id.
@@ -861,6 +869,11 @@ def create_model(db: Session, manufacturer_id: int, tenant_id: int, model: schem
     db.commit()
     db.refresh(db_model)
     return db_model
+
+
+def get_models(db: Session, manufacturer_id: int):
+    """Retorna todos os modelos de um fabricante."""
+    return db.query(models.Model).filter(models.Model.manufacturer_id == manufacturer_id).all()
 
 def delete_model(db: Session, model_id: int, tenant_id: int):
     """

@@ -9,9 +9,10 @@ export default function CatalogPage() {
   const [search, setSearch] = useState('')
 
   const { data: parts = [], loading: loadingParts, refetch: refetchParts } = useApi<any[]>(() => api.get('/api/inventory/parts'))
+  const { data: services = [], loading: loadingServices } = useApi<any[]>(() => api.get('/api/config/service-definitions'))
   const { data: kits = [], loading: loadingKits } = useApi<any[]>(() => api.get('/api/inventory/kits'))
 
-  const loading = activeTab === 'PARTS' ? loadingParts : activeTab === 'KITS' ? loadingKits : false
+  const loading = activeTab === 'PARTS' ? loadingParts : activeTab === 'KITS' ? loadingKits : loadingServices
 
   const tabs = [
     { id: 'PARTS', label: 'Peças', icon: Package, color: 'blue' },
@@ -28,13 +29,20 @@ export default function CatalogPage() {
         p.category?.toLowerCase().includes(needle)
       )
     }
+    if (activeTab === 'SERVICES') {
+      return services.filter(s =>
+        s.name?.toLowerCase().includes(needle) ||
+        s.category?.toLowerCase().includes(needle) ||
+        s.code?.toLowerCase().includes(needle)
+      )
+    }
     if (activeTab === 'KITS') {
       return kits.filter(k =>
         k.name?.toLowerCase().includes(needle)
       )
     }
     return []
-  }, [parts, kits, activeTab, search])
+  }, [parts, services, kits, activeTab, search])
 
   const formatCurrency = (v: number) =>
     new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v || 0)
@@ -95,8 +103,8 @@ export default function CatalogPage() {
         ) : filtered.length === 0 ? (
           <EmptyState
             icon={<Package className="w-10 h-10" />}
-            title={activeTab === 'SERVICES' ? 'Módulo em breve' : 'Nenhum item encontrado'}
-            description={activeTab === 'SERVICES' ? 'A gestão de serviços do catálogo estará disponível em breve.' : 'Cadastre peças ou kits para usar em orçamentos.'}
+            title="Nenhum item encontrado"
+            description={activeTab === 'SERVICES' ? 'Nenhum serviço cadastrado. Adicione através do botão acima.' : 'Cadastre peças ou kits para usar em orçamentos.'}
           />
         ) : (
           <div className="overflow-x-auto">
@@ -120,13 +128,13 @@ export default function CatalogPage() {
                               </div>
                               <div>
                                  <p className="text-sm font-bold text-slate-200">{item.name}</p>
-                                 <p className="text-[10px] text-slate-500 font-mono">{item.sku || `KIT-${item.id}`}</p>
+                                 <p className="text-[10px] text-slate-500 font-mono">{item.sku || item.code || `ID-${item.id}`}</p>
                               </div>
                            </div>
                         </td>
                         <td className="px-6 py-4">
                            <span className="text-[9px] font-bold px-2 py-0.5 rounded border border-navy-600 bg-navy-900 text-slate-400 uppercase tracking-tighter">
-                              {item.category || item.vehicle_type || 'Geral'}
+                              {item.category || item.group || item.vehicle_type || 'Geral'}
                            </span>
                         </td>
                         {activeTab === 'PARTS' && (
@@ -138,8 +146,8 @@ export default function CatalogPage() {
                           </td>
                         )}
                         <td className="px-6 py-4 text-right">
-                           <p className="text-xs font-bold text-emerald-400">{formatCurrency(item.sale_price || item.cost_price || 0)}</p>
-                           <p className="text-[9px] text-slate-600 uppercase">Preço Venda</p>
+                           <p className="text-xs font-bold text-emerald-400">{formatCurrency(item.price || item.default_price || item.sale_price || item.cost_price || 0)}</p>
+                           <p className="text-[9px] text-slate-600 uppercase">Preço</p>
                         </td>
                         <td className="px-6 py-4 text-right">
                            <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">

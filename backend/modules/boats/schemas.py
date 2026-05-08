@@ -6,7 +6,9 @@ from core.schemas import CamelModel
 class EngineBase(CamelModel):
     serial_number: str
     motor_number: Optional[str] = None
+    brand: Optional[str] = None        # ex: Mercury, Yamaha, Volvo Penta
     model: str
+    hp: Optional[int] = None           # Potência em cavalos
     sale_date: Optional[str] = None
     warranty_status: Optional[str] = None
     warranty_validity: Optional[str] = None
@@ -23,7 +25,9 @@ class EngineUpdate(CamelModel):
     id: Optional[int] = None
     serial_number: Optional[str] = None
     motor_number: Optional[str] = None
+    brand: Optional[str] = None
     model: Optional[str] = None
+    hp: Optional[int] = None
     sale_date: Optional[str] = None
     warranty_status: Optional[str] = None
     warranty_validity: Optional[str] = None

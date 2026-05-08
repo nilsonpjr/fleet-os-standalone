@@ -138,3 +138,24 @@ class ServiceCatalog(Base):
     complexity = Column(Enum(ComplexityType), default=ComplexityType.MEDIA)
 
     subcategory = relationship("ServiceSubcategory", back_populates="services")
+
+
+class Manufacturer(Base):
+    __tablename__ = "manufacturers"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    tenant_id = Column(Integer, ForeignKey("tenants.id"), nullable=False, index=True)
+    name = Column(String(200), nullable=False)
+    type = Column(String(50), nullable=False) # BOAT or ENGINE
+    
+    models = relationship("Model", back_populates="manufacturer", cascade="all, delete-orphan")
+
+
+class Model(Base):
+    __tablename__ = "models"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(200), nullable=False)
+    manufacturer_id = Column(Integer, ForeignKey("manufacturers.id"), nullable=False)
+    
+    manufacturer = relationship("Manufacturer", back_populates="models")

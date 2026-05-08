@@ -17,7 +17,7 @@ export default function BoatDetailPage() {
   const [editingEngine, setEditingEngine] = useState<any>(null)
   const [savingEngine, setSavingEngine] = useState(false)
   const [engineForm, setEngineForm] = useState({
-    serial_number: '', model: '', motor_number: '', hours: '', year: '', sale_date: '', warranty_status: '', warranty_validity: '',
+    serial_number: '', brand: '', model: '', hp: '', motor_number: '', hours: '', year: '', sale_date: '', warranty_status: '', warranty_validity: '',
   })
 
   const { data: boat, loading, error, refetch } = useApi<any>(() => 
@@ -28,9 +28,20 @@ export default function BoatDetailPage() {
     api.get(`/api/boats/${id}/regulatory`)
   )
 
+  const { data: engineManufacturers } = useApi<any[]>(() => 
+    api.get('/api/boats/catalog/manufacturers?type=ENGINE')
+  )
+
+  const [selectedManufacturerId, setSelectedManufacturerId] = useState<number | null>(null)
+  
+  const { data: catalogModels } = useApi<any[]>(() => 
+    selectedManufacturerId ? api.get(`/api/boats/catalog/manufacturers/${selectedManufacturerId}/models`) : Promise.resolve({ data: [] }),
+    [selectedManufacturerId]
+  )
+
   const openAddEngine = () => {
     setEditingEngine(null)
-    setEngineForm({ serial_number: '', model: '', motor_number: '', hours: '', year: '', sale_date: '', warranty_status: '', warranty_validity: '' })
+    setEngineForm({ serial_number: '', brand: '', model: '', hp: '', motor_number: '', hours: '', year: '', sale_date: '', warranty_status: '', warranty_validity: '' })
     setShowEngineModal(true)
   }
 
@@ -38,7 +49,9 @@ export default function BoatDetailPage() {
     setEditingEngine(engine)
     setEngineForm({
       serial_number: engine.serial_number || '',
+      brand: engine.brand || '',
       model: engine.model || '',
+      hp: engine.hp !== undefined ? String(engine.hp) : '',
       motor_number: engine.motor_number || '',
       hours: engine.hours !== undefined ? String(engine.hours) : '',
       year: engine.year !== undefined ? String(engine.year) : '',
@@ -59,7 +72,9 @@ export default function BoatDetailPage() {
       const currentEngines: any[] = (boat?.engines || []).map((e: any) => ({
         id: e.id,
         serial_number: e.serial_number,
+        brand: e.brand,
         model: e.model,
+        hp: e.hp,
         motor_number: e.motor_number,
         hours: e.hours,
         year: e.year,
@@ -71,7 +86,9 @@ export default function BoatDetailPage() {
       const updatedEngine = {
         id: editingEngine?.id,
         serial_number: engineForm.serial_number,
+        brand: engineForm.brand || undefined,
         model: engineForm.model,
+        hp: engineForm.hp ? parseInt(engineForm.hp) : undefined,
         motor_number: engineForm.motor_number || undefined,
         hours: engineForm.hours ? parseInt(engineForm.hours) : 0,
         year: engineForm.year ? parseInt(engineForm.year) : undefined,
@@ -262,7 +279,7 @@ export default function BoatDetailPage() {
                         <Settings className="w-6 h-6" />
                       </div>
                       <div>
-                        <div className="text-slate-100 font-bold">{engine.model}</div>
+                        <div className="text-slate-100 font-bold">{engine.brand ? `${engine.brand} ` : ''}{engine.model}{engine.hp ? ` ${engine.hp}HP` : ''}</div>
                         <div className="text-xs text-slate-500">S/N: {engine.serial_number}</div>
                       </div>
                     </div>
@@ -357,10 +374,38 @@ export default function BoatDetailPage() {
               </button>
             </div>
             <div className="p-6 space-y-4 overflow-y-auto max-h-[70vh]">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold uppercase text-slate-500">Fabricante / Marca *</label>
+                  <select 
+                    className="w-full px-4 py-2.5 rounded-xl bg-navy-800 border border-navy-700 text-sm text-slate-100" 
+                    value={engineForm.brand} 
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setEngineForm({...engineForm, brand: val});
+                      const mfr = engineManufacturers?.find(m => m.name === val);
+                      setSelectedManufacturerId(mfr?.id || null);
+                    }}
+                  >
+                    <option value="">Selecione...</option>
+                    {engineManufacturers?.map(m => (
+                      <option key={m.id} value={m.name}>{m.name}</option>
+                    ))}
+                  </select>
+                </div>
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold uppercase text-slate-500">Modelo / Nome *</label>
-                  <input className="w-full px-4 py-2.5 rounded-xl bg-navy-800 border border-navy-700 text-sm text-slate-100" placeholder="Ex: Mercury 250HP" value={engineForm.model} onChange={(e) => setEngineForm({...engineForm, model: e.target.value})} />
+                  <label className="text-[10px] font-bold uppercase text-slate-500">Modelo *</label>
+                  <input 
+                    list="engine-models"
+                    className="w-full px-4 py-2.5 rounded-xl bg-navy-800 border border-navy-700 text-sm text-slate-100" 
+                    value={engineForm.model} 
+                    onChange={(e) => setEngineForm({...engineForm, model: e.target.value})} 
+                    placeholder="Ex: Verado V8"
+                  />
+                  <datalist id="engine-models">
+                    {catalogModels?.map(m => (
+                      <option key={m.id} value={m.name} />
+                    ))}
+                  </datalist>
                 </div>
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-bold uppercase text-slate-500">Nº de Série *</label>
@@ -369,6 +414,10 @@ export default function BoatDetailPage() {
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-bold uppercase text-slate-500">Nº do Motor</label>
                   <input className="w-full px-4 py-2.5 rounded-xl bg-navy-800 border border-navy-700 text-sm text-slate-100" placeholder="Opcional" value={engineForm.motor_number} onChange={(e) => setEngineForm({...engineForm, motor_number: e.target.value})} />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold uppercase text-slate-500">Potência (HP)</label>
+                  <input type="number" className="w-full px-4 py-2.5 rounded-xl bg-navy-800 border border-navy-700 text-sm text-slate-100" placeholder="Ex: 300" value={engineForm.hp} onChange={(e) => setEngineForm({...engineForm, hp: e.target.value})} />
                 </div>
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-bold uppercase text-slate-500">Horímetro Atual (h)</label>

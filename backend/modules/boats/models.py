@@ -16,7 +16,9 @@ class Engine(Base):
     boat_id = Column(Integer, ForeignKey("boats.id"), nullable=False)
     serial_number = Column(String(100), nullable=False)
     motor_number = Column(String(100))
+    brand = Column(String(100))        # Fabricante: Mercury, Yamaha, Volvo, etc.
     model = Column(String(200), nullable=False)
+    hp = Column(Integer)               # Potência em cavalos
     sale_date = Column(String(50))
     warranty_status = Column(String(100))
     warranty_validity = Column(String(50))
