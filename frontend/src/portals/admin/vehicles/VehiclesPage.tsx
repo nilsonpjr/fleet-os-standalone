@@ -34,6 +34,12 @@ interface ExpiryAlert {
 
 import { CreateVehicleModal } from './components/CreateVehicleModal'
 
+function asNumber(v: string): number | undefined {
+  if (!v.trim()) return undefined
+  const parsed = Number(v.replace(',', '.'))
+  return Number.isFinite(parsed) ? parsed : undefined
+}
+
 function fmtDate(v?: string | null): string {
   if (!v) return '—'
   const dt = new Date(v)
