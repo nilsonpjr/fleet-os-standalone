@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { X, Save, Ship, Anchor, Shield, User, FileText } from 'lucide-react'
 import api from '@core/api/client'
 
@@ -11,6 +11,7 @@ interface CreateBoatModalProps {
 export function CreateBoatModal({ onClose, onSuccess, initialData }: CreateBoatModalProps) {
   const [loading, setLoading] = useState(false)
   const [activeTab, setActiveTab] = useState(0)
+  const [clients, setClients] = useState<{ id: number; name: string }[]>([])
   const [formData, setFormData] = useState({
     name: initialData?.name || '',
     type: initialData?.type || 'LANCHA',
@@ -31,6 +32,12 @@ export function CreateBoatModal({ onClose, onSuccess, initialData }: CreateBoatM
     { label: 'Regulatório', icon: Anchor },
     { label: 'Proprietário', icon: User },
   ]
+
+  useEffect(() => {
+    api.get<{ id: number; name: string }[]>('/api/clients')
+       .then(setClients)
+       .catch(console.error)
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -182,8 +189,9 @@ export function CreateBoatModal({ onClose, onSuccess, initialData }: CreateBoatM
                   className="w-full bg-navy-800 border border-navy-700 rounded-xl px-4 py-3 text-slate-200"
                 >
                   <option value="">Selecione um cliente...</option>
-                  {/* TODO: Load clients list */}
-                  <option value="1">Cliente Demo 1</option>
+                  {clients.map(c => (
+                    <option key={c.id} value={c.id}>{c.name} (ID #{c.id})</option>
+                  ))}
                 </select>
               </div>
               <div className="p-4 rounded-2xl bg-amber-500/5 border border-amber-500/10 flex gap-4">
