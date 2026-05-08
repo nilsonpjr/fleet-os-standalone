@@ -1,17 +1,43 @@
 import { useState, useMemo } from 'react'
-import { Search, Plus, Package, Wrench, Boxes, MoreVertical, Pencil, Trash2, Tag, ShieldCheck } from 'lucide-react'
-import { EmptyState, TableSkeleton, StatusBadge } from '@shared/components/ui'
+import { Search, Plus, Package, Wrench, Boxes, Pencil, Tag, ShieldCheck, RefreshCw } from 'lucide-react'
+import { EmptyState, TableSkeleton } from '@shared/components/ui'
+import { useApi } from '@shared/hooks/useApi'
+import api from '@core/api/client'
 
 export default function CatalogPage() {
   const [activeTab, setActiveTab] = useState('PARTS')
   const [search, setSearch] = useState('')
-  const [loading] = useState(false) // TODO: Connect API
+
+  const { data: parts = [], loading: loadingParts, refetch: refetchParts } = useApi<any[]>(() => api.get('/api/inventory/parts'))
+  const { data: kits = [], loading: loadingKits } = useApi<any[]>(() => api.get('/api/inventory/kits'))
+
+  const loading = activeTab === 'PARTS' ? loadingParts : activeTab === 'KITS' ? loadingKits : false
 
   const tabs = [
     { id: 'PARTS', label: 'Peças', icon: Package, color: 'blue' },
     { id: 'SERVICES', label: 'Serviços', icon: Wrench, color: 'amber' },
     { id: 'KITS', label: 'Kits de Manutenção', icon: Boxes, color: 'emerald' },
   ]
+
+  const filtered = useMemo(() => {
+    const needle = search.toLowerCase()
+    if (activeTab === 'PARTS') {
+      return parts.filter(p =>
+        p.name?.toLowerCase().includes(needle) ||
+        p.sku?.toLowerCase().includes(needle) ||
+        p.category?.toLowerCase().includes(needle)
+      )
+    }
+    if (activeTab === 'KITS') {
+      return kits.filter(k =>
+        k.name?.toLowerCase().includes(needle)
+      )
+    }
+    return []
+  }, [parts, kits, activeTab, search])
+
+  const formatCurrency = (v: number) =>
+    new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v || 0)
 
   return (
     <div className="space-y-6 animate-fadein">
@@ -56,14 +82,22 @@ export default function CatalogPage() {
               className="w-full pl-10 pr-4 py-2.5 bg-navy-900 border border-navy-700 rounded-xl text-sm text-slate-200 outline-none focus:border-emerald-500/50 transition-all"
             />
           </div>
-          <div className="flex gap-2">
-            <button className="px-3 py-1.5 rounded-lg border border-navy-700 text-[10px] font-bold text-slate-500 uppercase hover:text-slate-300 transition-colors">Filtrar Categoria</button>
-            <button className="px-3 py-1.5 rounded-lg border border-navy-700 text-[10px] font-bold text-slate-500 uppercase hover:text-slate-300 transition-colors">Exportar</button>
-          </div>
+          <button
+            onClick={refetchParts}
+            className="p-2.5 rounded-xl border border-navy-700 text-slate-500 hover:bg-navy-700 transition-all"
+          >
+            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+          </button>
         </div>
 
         {loading ? (
           <TableSkeleton rows={8} />
+        ) : filtered.length === 0 ? (
+          <EmptyState
+            icon={<Package className="w-10 h-10" />}
+            title={activeTab === 'SERVICES' ? 'Módulo em breve' : 'Nenhum item encontrado'}
+            description={activeTab === 'SERVICES' ? 'A gestão de serviços do catálogo estará disponível em breve.' : 'Cadastre peças ou kits para usar em orçamentos.'}
+          />
         ) : (
           <div className="overflow-x-auto">
              <table className="w-full text-left">
@@ -71,41 +105,46 @@ export default function CatalogPage() {
                   <tr className="border-b border-navy-700 text-[10px] font-bold text-slate-500 uppercase tracking-widest bg-navy-900/20">
                     <th className="px-6 py-4">Item / Código</th>
                     <th className="px-6 py-4">Categoria</th>
+                    {activeTab === 'PARTS' && <th className="px-6 py-4 text-right">Estoque</th>}
                     <th className="px-6 py-4 text-right">Preço Base</th>
                     <th className="px-6 py-4 text-right">Ações</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-navy-700">
-                   {/* Placeholder Data */}
-                   {[1,2,3,4,5].map(i => (
-                     <tr key={i} className="hover:bg-navy-700/30 transition-all group">
+                   {filtered.map(item => (
+                     <tr key={item.id} className="hover:bg-navy-700/30 transition-all group">
                         <td className="px-6 py-4">
                            <div className="flex items-center gap-3">
                               <div className="w-10 h-10 rounded-xl bg-navy-900 border border-navy-700 flex items-center justify-center text-slate-500 group-hover:text-emerald-400 transition-colors">
-                                 {activeTab === 'PARTS' ? <Package className="w-5 h-5" /> : <Wrench className="w-5 h-5" />}
+                                 {activeTab === 'PARTS' ? <Package className="w-5 h-5" /> : <Boxes className="w-5 h-5" />}
                               </div>
                               <div>
-                                 <p className="text-sm font-bold text-slate-200">Item Exemplo #{i}</p>
-                                 <p className="text-[10px] text-slate-500 font-mono">SKU-00{i}-DEMO</p>
+                                 <p className="text-sm font-bold text-slate-200">{item.name}</p>
+                                 <p className="text-[10px] text-slate-500 font-mono">{item.sku || `KIT-${item.id}`}</p>
                               </div>
                            </div>
                         </td>
                         <td className="px-6 py-4">
                            <span className="text-[9px] font-bold px-2 py-0.5 rounded border border-navy-600 bg-navy-900 text-slate-400 uppercase tracking-tighter">
-                              {activeTab === 'PARTS' ? 'Peças de Motor' : 'Mão de Obra'}
+                              {item.category || item.vehicle_type || 'Geral'}
                            </span>
                         </td>
+                        {activeTab === 'PARTS' && (
+                          <td className="px-6 py-4 text-right">
+                            <p className={`text-xs font-bold ${(item.stock_quantity || 0) <= (item.min_stock || 0) ? 'text-red-400' : 'text-slate-300'}`}>
+                              {item.stock_quantity || 0}
+                            </p>
+                            <p className="text-[9px] text-slate-600 uppercase">unidades</p>
+                          </td>
+                        )}
                         <td className="px-6 py-4 text-right">
-                           <p className="text-xs font-bold text-emerald-400">R$ {(i * 150).toFixed(2)}</p>
-                           <p className="text-[9px] text-slate-600 uppercase">Sugestão Venda</p>
+                           <p className="text-xs font-bold text-emerald-400">{formatCurrency(item.sale_price || item.cost_price || 0)}</p>
+                           <p className="text-[9px] text-slate-600 uppercase">Preço Venda</p>
                         </td>
                         <td className="px-6 py-4 text-right">
                            <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                               <button className="p-2 rounded-lg bg-navy-900 border border-navy-700 text-slate-400 hover:text-emerald-500 transition-all">
                                  <Pencil className="w-4 h-4" />
-                              </button>
-                              <button className="p-2 rounded-lg bg-navy-900 border border-navy-700 text-slate-400 hover:text-red-400 transition-all">
-                                 <Trash2 className="w-4 h-4" />
                               </button>
                            </div>
                         </td>

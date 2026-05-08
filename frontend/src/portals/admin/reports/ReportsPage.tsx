@@ -12,6 +12,8 @@ export default function ReportsPage() {
   const { data: stats, loading } = useApi<any>(() => api.get('/api/fleet/reports/costs'))
   const { data: vehicles = [] } = useApi<any[]>(() => api.get('/api/fleet/vehicles'))
   const { data: boats = [] } = useApi<any[]>(() => api.get('/api/boats'))
+  const { data: orders = [] } = useApi<any[]>(() => api.get('/api/orders'))
+  const { data: settings } = useApi<any>(() => api.get('/api/config/settings'))
 
   const pieData = useMemo(() => {
     if (!stats) return []
@@ -80,10 +82,10 @@ export default function ReportsPage() {
                <h1 className="text-3xl font-black text-slate-100">Relatório de Frota · FleetOS</h1>
                <p className="text-slate-400 text-sm">Gerado em {new Date().toLocaleString('pt-BR')}</p>
             </div>
-            <div className="text-right">
-               <p className="text-xs font-bold text-slate-500 uppercase">Gestora Maré Alta</p>
-               <p className="text-[10px] text-slate-600">marealtanautica.com.br</p>
-            </div>
+             <div className="text-right">
+                <p className="text-xs font-bold text-slate-500 uppercase">{settings?.company_name || settings?.trade_name || 'FleetOS'}</p>
+                <p className="text-[10px] text-slate-600">{new Date().toLocaleDateString('pt-BR')}</p>
+             </div>
          </div>
       </div>
 
@@ -97,7 +99,7 @@ export default function ReportsPage() {
         />
         <KpiCard
           title="Ticket Médio OS"
-          value={formatCurrency((stats?.grand_total || 0) / 10)} // Placeholder count
+          value={formatCurrency(orders.length > 0 ? (stats?.grand_total || 0) / orders.length : 0)}
           subtitle="custo por intervenção"
           icon={<TrendingUp className="w-5 h-5" />}
           accentColor="sky"
