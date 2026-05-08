@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { X, User, MapPin, Phone, Shield, FileText, Save, Search } from 'lucide-react'
 
 interface ClientFormModalProps {
@@ -33,7 +33,22 @@ export default function ClientFormModal({ isOpen, onClose, onSave, initialData, 
     contract_end: '',
     payment_terms: '',
     account_manager: '',
+    account_manager: '',
   })
+
+  useEffect(() => {
+    if (initialData) {
+      setFormData(initialData)
+    } else {
+      setFormData({
+        name: '', document: '', type: 'PF', phone: '', email: '', address: '',
+        company_name: '', cnpj: '', ie: '', im: '', crt: '1',
+        billing_address: '', billing_city: '', billing_state: '', billing_zip: '',
+        contract_type: 'MENSAL', contract_value: '', contract_start: '', contract_end: '',
+        payment_terms: '', account_manager: '',
+      })
+    }
+  }, [initialData])
 
   if (!isOpen) return null
 

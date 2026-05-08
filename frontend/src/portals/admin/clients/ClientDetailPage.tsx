@@ -9,14 +9,17 @@ import { useApi } from '@shared/hooks/useApi'
 import api from '@core/api/client'
 import { TableSkeleton } from '@shared/components/ui'
 import { KpiCard } from '@shared/components/KpiCard'
+import ClientFormModal from './ClientFormModal'
 
 export default function ClientDetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('OVERVIEW')
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [saving, setSaving] = useState(false)
 
-  const { data: client, loading: loadingClient } = useApi<any>(() => api.get(`/api/clients/${id}`))
-  const { data: detail, loading: loadingDetail } = useApi<any>(() => api.get(`/api/fleet/clients/${id}/detail`))
+  const { data: client, loading: loadingClient, refetch: refetchClient } = useApi<any>(() => api.get(`/api/clients/${id}`))
+  const { data: detail, loading: loadingDetail, refetch: refetchDetail } = useApi<any>(() => api.get(`/api/fleet/clients/${id}/detail`))
   const { data: fleet = [], loading: loadingFleet } = useApi<any[]>(() => api.get(`/api/fleet/assets?client_id=${id}`))
   const { data: orders = [] } = useApi<any[]>(() => api.get(`/api/orders?client_id=${id}`))
 
@@ -33,6 +36,46 @@ export default function ClientDetailPage() {
     { id: 'ORDERS', label: 'Histórico de OS', icon: History },
     { id: 'CONTRACT', label: 'Contrato & Faturamento', icon: FileText },
   ]
+
+  const handleEditSubmit = async (formData: any) => {
+    try {
+      setSaving(true)
+      // First update the core client data
+      await api.put(`/api/clients/${id}`, {
+        name: formData.name,
+        document: formData.document,
+        type: formData.type,
+        phone: formData.phone,
+        email: formData.email,
+        address: formData.address,
+      })
+
+      // Then update the detail/contract data
+      await api.put(`/api/fleet/clients/${id}/detail`, {
+        company_name: formData.company_name,
+        cnpj: formData.cnpj,
+        ie: formData.ie,
+        im: formData.im,
+        crt: formData.crt,
+        billing_address: formData.billing_address,
+        billing_city: formData.billing_city,
+        billing_state: formData.billing_state,
+        billing_zip: formData.billing_zip,
+        contract_type: formData.contract_type,
+        contract_value: formData.contract_value ? Number(formData.contract_value) : undefined,
+        contract_start: formData.contract_start || undefined,
+        contract_end: formData.contract_end || undefined,
+      })
+
+      await Promise.all([refetchClient(), refetchDetail()])
+      setShowEditModal(false)
+    } catch (error) {
+      console.error('Failed to update client', error)
+      alert('Erro ao atualizar cliente')
+    } finally {
+      setSaving(false)
+    }
+  }
 
   return (
     <div className="space-y-6 animate-fadein pb-10">
@@ -52,7 +95,10 @@ export default function ClientDetailPage() {
             <p className="text-slate-400 text-sm mt-0.5">{client.document} • {client.email || 'Sem e-mail'}</p>
           </div>
         </div>
-        <button className="px-4 py-2 rounded-xl border border-navy-700 text-slate-300 text-xs font-bold flex items-center gap-2 hover:bg-navy-800 transition-all">
+        <button 
+          onClick={() => setShowEditModal(true)}
+          className="px-4 py-2 rounded-xl border border-navy-700 text-slate-300 text-xs font-bold flex items-center gap-2 hover:bg-navy-800 transition-all"
+        >
           <Pencil className="w-4 h-4" /> Editar Cadastro
         </button>
       </div>
@@ -286,6 +332,14 @@ export default function ClientDetailPage() {
           </div>
         )}
       </div>
+
+      <ClientFormModal
+        isOpen={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        onSave={handleEditSubmit}
+        initialData={{ ...client, ...detail }}
+        loading={saving}
+      />
     </div>
   )
 }
